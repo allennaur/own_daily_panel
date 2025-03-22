@@ -1,0 +1,74 @@
+:root {
+  --visionos-bg: rgba(245, 245, 247, 0.85);
+  --visionos-glass: rgba(255, 255, 255, 0.6);
+  --visionos-border: rgba(255, 255, 255, 0.3);
+  --visionos-shadow: rgba(0, 0, 0, 0.1);
+  --visionos-text: rgb(29, 29, 31);
+}
+
+.hello {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--visionos-bg);
+  backdrop-filter: blur(30px);
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--visionos-text);
+}
+
+.header-container {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 20px;
+  background: var(--visionos-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--visionos-border);
+  box-shadow: 0 4px 24px var(--visionos-shadow);
+  transform: translateZ(20px);
+  transition: all 0.3s ease;
+}
+
+.header-container:hover {
+  transform: translateZ(25px) scale(1.02);
+  box-shadow: 0 8px 32px var(--visionos-shadow);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border-radius: 12px;
+  color: white;
+  margin-right: 12px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* 添加VisionOS风格的全局效果 */
+* {
+  box-sizing: border-box;
+}
+
+/* 使页面内容居中 */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
