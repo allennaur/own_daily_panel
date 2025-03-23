@@ -21,7 +21,7 @@
       <div class="panel-content">
         <div class="cards-container">
           <!-- 时间日期卡片 -->
-          <div class="card time-card">
+          <div class="card time-card" style="background: linear-gradient(135deg, rgba(111, 66, 193, 0.95), rgba(181, 52, 113, 0.9));">
             <div class="card-content">
               <div class="time">{{ currentTime }}</div>
               <div class="date">{{ currentDate }}</div>
@@ -30,32 +30,32 @@
           </div>
           
           <!-- 天气卡片 -->
-          <div class="card weather-card">
+          <div class="card weather-card" style="background: linear-gradient(135deg, rgba(25, 118, 210, 0.9), rgba(64, 196, 255, 0.85));">
             <div class="card-header">
-              <h3>天气</h3>
-              <span class="location">{{ weatherData.location }}</span>
+              <h3 style="color: white !important;">天气</h3>
+              <span class="location" style="color: white !important;">{{ weatherData.location }}</span>
             </div>
             <div class="card-content weather-content">
               <div class="weather-icon" :class="weatherData.icon"></div>
               <div class="weather-info">
-                <div class="temperature">{{ weatherData.temperature }}°</div>
-                <div class="weather-desc">{{ weatherData.description }}</div>
+                <div class="temperature" style="color: white !important;">{{ weatherData.temperature }}°</div>
+                <div class="weather-desc" style="color: white !important;">{{ weatherData.description }}</div>
               </div>
               <div class="weather-details">
                 <div class="weather-detail">
-                  <div class="detail-label">湿度</div>
-                  <div class="detail-value">{{ weatherData.humidity }}%</div>
+                  <div class="detail-label" style="color: white !important;">湿度</div>
+                  <div class="detail-value" style="color: white !important;">{{ weatherData.humidity }}%</div>
                 </div>
                 <div class="weather-detail">
-                  <div class="detail-label">风速</div>
-                  <div class="detail-value">{{ weatherData.windSpeed }} km/h</div>
+                  <div class="detail-label" style="color: white !important;">风速</div>
+                  <div class="detail-value" style="color: white !important;">{{ weatherData.windSpeed }} km/h</div>
                 </div>
               </div>
             </div>
           </div>
           
           <!-- 待办事项卡片 -->
-          <div class="card todo-card">
+          <div class="card todo-card" style="background: linear-gradient(135deg, rgba(46, 176, 134, 0.85), rgba(96, 221, 142, 0.75));">
             <div class="card-header">
               <h3>今日待办</h3>
               <button class="add-btn" @click="addNewTodo">+</button>
@@ -80,7 +80,7 @@
           </div>
           
           <!-- 笔记卡片 -->
-          <div class="card notes-card">
+          <div class="card notes-card" style="background: linear-gradient(135deg, rgba(255, 153, 0, 0.75), rgba(255, 183, 77, 0.7));">
             <div class="card-header">
               <h3>快速笔记</h3>
             </div>
@@ -95,4 +95,4 @@
 </template>
 
 <script src="../assets/js/HelloWorld.js"></script>
-<style src="../assets/css/HelloWorld.css" scoped></style>
+<style src="../assets/css/HelloWorld.css"></style>

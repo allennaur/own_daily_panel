@@ -7,11 +7,11 @@
   --visionos-text: rgb(29, 29, 31);
   --visionos-accent: rgba(0, 122, 255, 0.8);
   
-  /* 卡片颜色 */
-  --card-time-bg: linear-gradient(135deg, rgba(125, 46, 185, 0.6), rgba(173, 83, 137, 0.6));
-  --card-weather-bg: linear-gradient(135deg, rgba(64, 145, 247, 0.6), rgba(99, 204, 249, 0.6));
-  --card-todo-bg: linear-gradient(135deg, rgba(89, 193, 123, 0.4), rgba(161, 234, 181, 0.4));
-  --card-notes-bg: linear-gradient(135deg, rgba(251, 177, 60, 0.3), rgba(255, 204, 128, 0.3));
+  /* 更鲜明的卡片颜色 - 降低透明度使颜色更饱和 */
+  --card-time-bg: linear-gradient(135deg, rgba(111, 66, 193, 0.95), rgba(181, 52, 113, 0.9));
+  --card-weather-bg: linear-gradient(135deg, rgba(25, 118, 210, 0.9), rgba(64, 196, 255, 0.85));
+  --card-todo-bg: linear-gradient(135deg, rgba(46, 176, 134, 0.85), rgba(96, 221, 142, 0.75));
+  --card-notes-bg: linear-gradient(135deg, rgba(255, 153, 0, 0.75), rgba(255, 183, 77, 0.7));
 }
 
 .hello {
@@ -131,7 +131,7 @@
   width: 100%;
 }
 
-/* 基础卡片样式 */
+/* 基础卡片样式 - 增强视觉效果 */
 .card {
   border-radius: 20px;
   backdrop-filter: blur(10px);
@@ -140,12 +140,32 @@
   overflow: hidden;
   height: 100%;
   min-height: 200px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.5), 
+    rgba(255, 255, 255, 0.8), 
+    rgba(255, 255, 255, 0.5));
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover::before {
+  opacity: 1;
 }
 
 .card-header {
@@ -167,14 +187,34 @@
   padding: 16px;
 }
 
-/* 时间日期卡片 */
+/* 时间日期卡片 - 增加动态效果 */
 .time-card {
-  background: var(--card-time-bg);
-  color: #333333 !important;
+  background: var(--card-time-bg) !important;
+  color: white !important;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.time-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transform: scale(1);
+  animation: pulse 8s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 0.4; transform: scale(1.2); }
 }
 
 .time-card .time {
@@ -182,37 +222,50 @@
   font-weight: 300;
   line-height: 1;
   margin-bottom: 8px;
-  color: #333333 !important;
+  color: white !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .time-card .date {
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 4px;
-  color: #333333 !important;
+  color: white !important;
 }
 
 .time-card .day {
   font-size: 16px;
   font-weight: 300;
   opacity: 0.9;
-  color: #333333 !important;
+  color: white !important;
 }
 
-/* 天气卡片 */
+/* 天气卡片 - 增强视觉效果 */
 .weather-card {
-  background: var(--card-weather-bg);
-  color: #333333 !important;
+  background: var(--card-weather-bg) !important;
+  color: white !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.2), rgba(255,255,255,0) 70%);
 }
 
 .weather-card .location {
   font-size: 14px;
   opacity: 0.8;
-  color: #333333 !important;
+  color: white !important;
 }
 
 .weather-card .card-header h3 {
-  color: #333333 !important;
+  color: white !important;
 }
 
 .weather-content {
@@ -246,13 +299,13 @@
   font-weight: 300;
   line-height: 1;
   margin-bottom: 4px;
-  color: #333333 !important;
+  color: white !important;
 }
 
 .weather-desc {
   font-size: 14px;
   opacity: 0.8;
-  color: #333333 !important;
+  color: white !important;
 }
 
 .weather-details {
@@ -271,18 +324,19 @@
   font-size: 12px;
   opacity: 0.7;
   margin-bottom: 4px;
-  color: #333333 !important;
+  color: white !important;
 }
 
 .detail-value {
   font-size: 16px;
   font-weight: 500;
-  color: #333333 !important;
+  color: white !important;
 }
 
-/* 待办事项卡片 */
+/* 待办事项卡片 - 增加视觉层次 */
 .todo-card {
-  background: var(--card-todo-bg);
+  background: var(--card-todo-bg) !important;
+  position: relative;
 }
 
 .add-btn {
@@ -320,6 +374,15 @@
   align-items: center;
   padding: 12px 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.todo-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.todo-item.completed {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .todo-item.completed label {
@@ -436,9 +499,21 @@
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* 笔记卡片 */
+/* 笔记卡片 - 增加纸张质感 */
 .notes-card {
-  background: var(--card-notes-bg);
+  background: var(--card-notes-bg) !important;
+  position: relative;
+}
+
+.notes-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: repeating-linear-gradient(transparent, transparent 20px, rgba(0, 0, 0, 0.03) 20px, rgba(0, 0, 0, 0.03) 21px);
+  pointer-events: none;
 }
 
 .notes-card textarea {
@@ -449,8 +524,10 @@
   resize: none;
   font-size: 14px;
   color: rgba(0, 0, 0, 0.7);
-  line-height: 1.5;
+  line-height: 21px; /* 与背景线条匹配 */
   font-family: inherit;
+  position: relative;
+  z-index: 1;
 }
 
 .notes-card textarea:focus {
