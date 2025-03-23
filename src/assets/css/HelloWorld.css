@@ -1,9 +1,17 @@
 :root {
-  --visionos-bg: rgba(245, 245, 247, 0.85);
-  --visionos-glass: rgba(255, 255, 255, 0.6);
-  --visionos-border: rgba(255, 255, 255, 0.3);
+  /* 基础颜色 */
+  --visionos-bg: rgba(245, 245, 247, 0.5);
+  --visionos-panel: rgba(255, 255, 255, 0.7);
+  --visionos-border: rgba(255, 255, 255, 0.4);
   --visionos-shadow: rgba(0, 0, 0, 0.1);
   --visionos-text: rgb(29, 29, 31);
+  --visionos-accent: rgba(0, 122, 255, 0.8);
+  
+  /* 卡片颜色 */
+  --card-time-bg: linear-gradient(135deg, rgba(125, 46, 185, 0.6), rgba(173, 83, 137, 0.6));
+  --card-weather-bg: linear-gradient(135deg, rgba(64, 145, 247, 0.6), rgba(99, 204, 249, 0.6));
+  --card-todo-bg: linear-gradient(135deg, rgba(89, 193, 123, 0.4), rgba(161, 234, 181, 0.4));
+  --card-notes-bg: linear-gradient(135deg, rgba(251, 177, 60, 0.3), rgba(255, 204, 128, 0.3));
 }
 
 .hello {
@@ -12,34 +20,47 @@
   margin: 0;
   padding: 0;
   display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--visionos-bg);
+  background-color: var(--visionos-bg);
   backdrop-filter: blur(30px);
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--visionos-text);
 }
 
-.header-container {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  display: flex;
-  align-items: center;
-  padding: 12px 18px;
-  border-radius: 20px;
-  background: var(--visionos-glass);
-  backdrop-filter: blur(20px);
+.panel {
+  width: calc(100% - 48px);
+  height: calc(100% - 48px);
+  max-width: 1600px;
+  margin: 24px;
+  border-radius: 32px;
+  background: var(--visionos-panel);
+  backdrop-filter: blur(40px);
   border: 1px solid var(--visionos-border);
-  box-shadow: 0 4px 24px var(--visionos-shadow);
-  transform: translateZ(20px);
+  box-shadow: 
+    0 10px 30px var(--visionos-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   transition: all 0.3s ease;
+  transform: translateZ(0);
 }
 
-.header-container:hover {
-  transform: translateZ(25px) scale(1.02);
-  box-shadow: 0 8px 32px var(--visionos-shadow);
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-title-container {
+  display: flex;
+  align-items: center;
 }
 
 .logo {
@@ -52,6 +73,7 @@
   border-radius: 12px;
   color: white;
   margin-right: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .title {
@@ -59,6 +81,387 @@
   font-weight: 600;
   margin: 0;
   letter-spacing: -0.02em;
+  color: var(--visionos-text);
+}
+
+.fullscreen-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--visionos-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--visionos-text);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.fullscreen-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.fullscreen-btn:active {
+  transform: scale(0.98);
+}
+
+.panel-content {
+  flex: 1;
+  padding: 24px;
+  overflow: auto;
+}
+
+/* 卡片容器 */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+/* 基础卡片样式 */
+.card {
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--visionos-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  height: 100%;
+  min-height: 200px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.card-content {
+  padding: 16px;
+}
+
+/* 时间日期卡片 */
+.time-card {
+  background: var(--card-time-bg);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.time-card .time {
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.time-card .date {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.time-card .day {
+  font-size: 16px;
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+/* 天气卡片 */
+.weather-card {
+  background: var(--card-weather-bg);
+  color: white;
+}
+
+.weather-card .location {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.weather-content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.weather-icon {
+  width: 60px;
+  height: 60px;
+  margin-right: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.weather-icon.sunny {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FFFFFF"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>');
+}
+
+.weather-icon.cloudy {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FFFFFF"><path d="M19 18H6a4 4 0 1 1 0-8h.71A5.5 5.5 0 0 1 18 7.5v.5a4 4 0 0 1 1 7.89z"/></svg>');
+}
+
+.weather-info {
+  flex: 1;
+}
+
+.temperature {
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.weather-desc {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.weather-details {
+  display: flex;
+  width: 100%;
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 12px;
+}
+
+.weather-detail {
+  flex: 1;
+}
+
+.detail-label {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 待办事项卡片 */
+.todo-card {
+  background: var(--card-todo-bg);
+}
+
+.add-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-btn:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.todo-content {
+  padding: 0;
+}
+
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.todo-item.completed label {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.todo-item input[type="checkbox"] {
+  margin-right: 12px;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-item input[type="checkbox"]:checked {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-color: transparent;
+}
+
+.todo-item input[type="checkbox"]:checked::after {
+  content: "✓";
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.todo-item label {
+  flex: 1;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+
+.delete-btn {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  color: rgba(0, 0, 0, 0.7);
+  transform: scale(1.2);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 14px;
+}
+
+.add-todo-form {
+  padding: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.add-todo-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.form-buttons button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.7);
+  transition: all 0.2s;
+}
+
+.form-buttons button.save-btn {
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.form-buttons button:hover {
+  transform: translateY(-1px);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.form-buttons button.save-btn:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 笔记卡片 */
+.notes-card {
+  background: var(--card-notes-bg);
+}
+
+.notes-card textarea {
+  width: 100%;
+  height: 150px;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.notes-card textarea:focus {
+  outline: none;
+}
+
+/* VisionOS 风格的滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* 适应全屏模式 */
+.hello.fullscreen .panel {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
 }
 
 /* 添加VisionOS风格的全局效果 */
@@ -71,4 +474,26 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .panel {
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    margin: 12px;
+    border-radius: 24px;
+  }
+  
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .panel-header {
+    padding: 12px 16px;
+  }
+  
+  .panel-content {
+    padding: 16px;
+  }
 }
