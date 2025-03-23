@@ -1,8 +1,8 @@
 :root {
   /* 基础颜色 */
-  --visionos-bg: rgba(245, 245, 247, 0.5);
-  --visionos-panel: rgba(255, 255, 255, 0.7);
-  --visionos-border: rgba(255, 255, 255, 0.4);
+  --visionos-bg: rgba(245, 245, 247, 0.01);
+  --visionos-panel: #ffffff;  /* 纯白色面板 */
+  --visionos-border: rgba(230, 230, 235, 1);
   --visionos-shadow: rgba(0, 0, 0, 0.1);
   --visionos-text: rgb(29, 29, 31);
   --visionos-accent: rgba(0, 122, 255, 0.8);
@@ -25,10 +25,10 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--visionos-bg);
-  backdrop-filter: blur(30px);
+  background-color: transparent;
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--visionos-text);
+  z-index: 1;
 }
 
 .panel {
@@ -37,17 +37,26 @@
   max-width: 1600px;
   margin: 24px;
   border-radius: 32px;
-  background: var(--visionos-panel);
-  backdrop-filter: blur(40px);
+  background-color: #ffffff !important; /* 确保应用纯白色背景 */
   border: 1px solid var(--visionos-border);
   box-shadow: 
     0 10px 30px var(--visionos-shadow),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    0 0 0 1px rgba(0, 0, 0, 0.02) inset;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transition: all 0.3s ease;
   transform: translateZ(0);
+  position: relative;
+}
+
+/* 移除面板发光效果，确保背景颜色纯净 */
+.panel::before {
+  display: none;
+}
+
+.panel:hover::before {
+  opacity: 0.5;
 }
 
 .panel-header {
