@@ -170,7 +170,7 @@
 /* 时间日期卡片 */
 .time-card {
   background: var(--card-time-bg);
-  color: white;
+  color: #333333 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -182,29 +182,37 @@
   font-weight: 300;
   line-height: 1;
   margin-bottom: 8px;
+  color: #333333 !important;
 }
 
 .time-card .date {
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 4px;
+  color: #333333 !important;
 }
 
 .time-card .day {
   font-size: 16px;
   font-weight: 300;
   opacity: 0.9;
+  color: #333333 !important;
 }
 
 /* 天气卡片 */
 .weather-card {
   background: var(--card-weather-bg);
-  color: white;
+  color: #333333 !important;
 }
 
 .weather-card .location {
   font-size: 14px;
   opacity: 0.8;
+  color: #333333 !important;
+}
+
+.weather-card .card-header h3 {
+  color: #333333 !important;
 }
 
 .weather-content {
@@ -238,11 +246,13 @@
   font-weight: 300;
   line-height: 1;
   margin-bottom: 4px;
+  color: #333333 !important;
 }
 
 .weather-desc {
   font-size: 14px;
   opacity: 0.8;
+  color: #333333 !important;
 }
 
 .weather-details {
@@ -261,11 +271,13 @@
   font-size: 12px;
   opacity: 0.7;
   margin-bottom: 4px;
+  color: #333333 !important;
 }
 
 .detail-value {
   font-size: 16px;
   font-weight: 500;
+  color: #333333 !important;
 }
 
 /* 待办事项卡片 */
