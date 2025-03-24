@@ -1,6 +1,18 @@
 // 创建一个可复用的卡片效果混入
 
 export const CardEffectMixin = {
+  props: {
+    size: {
+      type: String,
+      default: 'small', // small, medium, large
+      validator: (value) => ['small', 'medium', 'large'].includes(value)
+    }
+  },
+  computed: {
+    cardSizeClass() {
+      return `card-${this.size}`;
+    }
+  },
   methods: {
     setupCardEffect(card) {
       if (!card) return;
@@ -8,6 +20,9 @@ export const CardEffectMixin = {
       card.addEventListener('mouseenter', this.handleCardMouseEnter);
       card.addEventListener('mousemove', this.handleCardMouseMove);
       card.addEventListener('mouseleave', this.handleCardMouseLeave);
+      
+      // 添加右键菜单事件
+      card.addEventListener('contextmenu', this.handleContextMenu);
     },
     
     handleCardMouseEnter(e) {
@@ -31,6 +46,15 @@ export const CardEffectMixin = {
       const card = e.currentTarget;
       card.style.transition = 'transform 0.5s ease-out';
       card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    },
+    
+    handleContextMenu(e) {
+      // 触发上下文菜单事件
+      this.$emit('context-menu', e);
+    },
+    
+    changeSize(newSize) {
+      this.$emit('size-change', newSize);
     }
   },
   beforeUnmount() {
@@ -39,6 +63,7 @@ export const CardEffectMixin = {
       card.removeEventListener('mouseenter', this.handleCardMouseEnter);
       card.removeEventListener('mousemove', this.handleCardMouseMove);
       card.removeEventListener('mouseleave', this.handleCardMouseLeave);
+      card.removeEventListener('contextmenu', this.handleContextMenu);
     }
   }
 };

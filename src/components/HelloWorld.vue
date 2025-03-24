@@ -19,32 +19,60 @@
         </button>
       </div>
       <div class="panel-content">
-        <div class="cards-container">
+        <div class="cards-container" ref="cardsContainer">
           <!-- 时间日期卡片 -->
           <TimeCard 
             :time="currentTime" 
             :date="currentDate" 
             :day="currentDay"
             :lunar="lunarDate"
+            :size="cardSizes.timeCard"
+            @size-change="changeCardSize('timeCard', $event)"
+            @context-menu="showCardSizeMenu('timeCard', $event)"
           />
           
           <!-- 天气卡片 -->
           <WeatherCard 
             :weatherData="weatherData"
+            :size="cardSizes.weatherCard"
+            @size-change="changeCardSize('weatherCard', $event)"
+            @context-menu="showCardSizeMenu('weatherCard', $event)"
           />
           
           <!-- 待办事项卡片 -->
           <TodoCard 
             :initialTodos="todos"
+            :size="cardSizes.todoCard"
             @update:todos="updateTodos"
+            @size-change="changeCardSize('todoCard', $event)"
+            @context-menu="showCardSizeMenu('todoCard', $event)"
           />
           
           <!-- 笔记卡片 -->
           <NoteCard 
             :initialNote="noteContent"
+            :size="cardSizes.noteCard"
             @update:note="updateNoteContent"
+            @size-change="changeCardSize('noteCard', $event)"
+            @context-menu="showCardSizeMenu('noteCard', $event)"
           />
         </div>
+      </div>
+    </div>
+    
+    <!-- 卡片尺寸上下文菜单 -->
+    <div class="card-size-menu" v-if="showSizeMenu" :style="menuPosition" @click="hideSizeMenu" @contextmenu.prevent>
+      <div class="menu-item" @click="setCardSize(currentCardId, 'small')">
+        <span class="menu-icon">S</span>
+        <span>小尺寸 (1x1)</span>
+      </div>
+      <div class="menu-item" @click="setCardSize(currentCardId, 'medium')">
+        <span class="menu-icon">M</span>
+        <span>中尺寸 (1x2)</span>
+      </div>
+      <div class="menu-item" @click="setCardSize(currentCardId, 'large')">
+        <span class="menu-icon">L</span>
+        <span>大尺寸 (2x2)</span>
       </div>
     </div>
   </div>
@@ -88,7 +116,20 @@ export default {
         { text: '回复重要邮件', completed: true },
         { text: '准备会议材料', completed: false }
       ],
-      noteContent: '今天要记得：\n\n1. 查阅资料\n2. 联系客户\n3. 整理会议记录'
+      noteContent: '今天要记得：\n\n1. 查阅资料\n2. 联系客户\n3. 整理会议记录',
+      // 卡片尺寸管理
+      cardSizes: {
+        timeCard: 'small',
+        weatherCard: 'medium',
+        todoCard: 'medium',
+        noteCard: 'large'
+      },
+      showSizeMenu: false,
+      menuPosition: {
+        top: '0px',
+        left: '0px'
+      },
+      currentCardId: null
     }
   },
   mounted() {
@@ -104,6 +145,12 @@ export default {
     
     // 如果存在本地存储数据，加载它
     this.loadLocalData();
+    
+    // 加载卡片尺寸设置
+    this.loadCardSizes();
+    
+    // 添加全局点击事件隐藏菜单
+    document.addEventListener('click', this.hideMenuOnOutsideClick);
   },
   beforeUnmount() {
     // 移除全屏监听
@@ -111,6 +158,9 @@ export default {
     document.removeEventListener('webkitfullscreenchange', this.fullscreenChanged);
     document.removeEventListener('mozfullscreenchange', this.fullscreenChanged);
     document.removeEventListener('MSFullscreenChange', this.fullscreenChanged);
+    
+    // 移除全局点击事件
+    document.removeEventListener('click', this.hideMenuOnOutsideClick);
   },
   methods: {
     toggleFullscreen() {
@@ -199,6 +249,7 @@ export default {
     saveLocalData() {
       localStorage.setItem('daily-panel-todos', JSON.stringify(this.todos));
       localStorage.setItem('daily-panel-notes', this.noteContent);
+      this.saveCardSizes(); // 同时保存卡片尺寸
     },
     
     loadLocalData() {
@@ -211,6 +262,75 @@ export default {
       
       if (savedNotes) {
         this.noteContent = savedNotes;
+      }
+    },
+    
+    // 卡片尺寸管理方法
+    showCardSizeMenu(cardId, event) {
+      // 防止默认右键菜单
+      event.preventDefault();
+      
+      // 设置菜单位置
+      this.menuPosition = {
+        top: `${event.clientY}px`,
+        left: `${event.clientX}px`
+      };
+      
+      // 显示菜单
+      this.showSizeMenu = true;
+      this.currentCardId = cardId;
+    },
+    
+    hideSizeMenu() {
+      this.showSizeMenu = false;
+    },
+    
+    hideMenuOnOutsideClick(event) {
+      const menu = document.querySelector('.card-size-menu');
+      if (menu && !menu.contains(event.target) && this.showSizeMenu) {
+        this.hideSizeMenu();
+      }
+    },
+    
+    setCardSize(cardId, size) {
+      if (this.cardSizes[cardId] !== size) {
+        this.changeCardSize(cardId, size);
+      }
+      this.hideSizeMenu();
+    },
+    
+    changeCardSize(cardId, size) {
+      this.cardSizes[cardId] = size;
+      this.saveCardSizes();
+      
+      // 允许布局重新计算
+      this.$nextTick(() => {
+        this.updateCardsLayout();
+      });
+    },
+    
+    updateCardsLayout() {
+      // 这里可以添加额外的布局调整逻辑，如有需要
+      // 例如重新排序卡片以更好地适应不同尺寸
+    },
+    
+    saveCardSizes() {
+      localStorage.setItem('daily-panel-card-sizes', JSON.stringify(this.cardSizes));
+    },
+    
+    loadCardSizes() {
+      const savedSizes = localStorage.getItem('daily-panel-card-sizes');
+      if (savedSizes) {
+        try {
+          const sizes = JSON.parse(savedSizes);
+          // 确保所有的卡片都有尺寸
+          this.cardSizes = {
+            ...this.cardSizes,
+            ...sizes
+          };
+        } catch (e) {
+          console.error('加载卡片尺寸失败:', e);
+        }
       }
     }
   }
@@ -339,8 +459,9 @@ export default {
 /* 卡片容器 */
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-auto-rows: minmax(150px, auto);
+  gap: 16px;
   width: 100%;
 }
 
@@ -407,6 +528,69 @@ export default {
   padding: 20px;
 }
 
+/* 卡片尺寸类 */
+.card.card-small {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.card.card-medium {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.card.card-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* 卡片尺寸菜单 */
+.card-size-menu {
+  position: fixed;
+  min-width: 180px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1000;
+  overflow: hidden;
+  transform-origin: top left;
+  animation: menu-appear 0.15s ease-out;
+}
+
+@keyframes menu-appear {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.menu-item {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  user-select: none;
+}
+
+.menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.menu-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--visionos-accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
 /* VisionOS 风格的滚动条 */
 ::-webkit-scrollbar {
   width: 8px;
@@ -445,7 +629,18 @@ export default {
   }
   
   .cards-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); /* 手机上一排放两个小卡片 */
+    gap: 12px;
+  }
+  
+  /* 在小屏幕上调整卡片尺寸 */
+  .card.card-medium, 
+  .card.card-large {
+    grid-column: span 2; /* 中型和大型卡片始终占满宽度 */
+  }
+  
+  .card.card-large {
+    grid-row: span 2; /* 大型卡片保持两行高 */
   }
   
   .panel-header {
