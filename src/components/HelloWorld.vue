@@ -21,78 +21,425 @@
       <div class="panel-content">
         <div class="cards-container">
           <!-- 时间日期卡片 -->
-          <div class="card time-card" style="background: linear-gradient(135deg, rgba(111, 66, 193, 0.95), rgba(181, 52, 113, 0.9));">
-            <div class="card-content">
-              <div class="time">{{ currentTime }}</div>
-              <div class="date">{{ currentDate }}</div>
-              <div class="day">{{ currentDay }}</div>
-            </div>
-          </div>
+          <TimeCard 
+            :time="currentTime" 
+            :date="currentDate" 
+            :day="currentDay"
+          />
           
           <!-- 天气卡片 -->
-          <div class="card weather-card" style="background: linear-gradient(135deg, rgba(25, 118, 210, 0.9), rgba(64, 196, 255, 0.85));">
-            <div class="card-header">
-              <h3 style="color: white !important;">天气</h3>
-              <span class="location" style="color: white !important;">{{ weatherData.location }}</span>
-            </div>
-            <div class="card-content weather-content">
-              <div class="weather-icon" :class="weatherData.icon"></div>
-              <div class="weather-info">
-                <div class="temperature" style="color: white !important;">{{ weatherData.temperature }}°</div>
-                <div class="weather-desc" style="color: white !important;">{{ weatherData.description }}</div>
-              </div>
-              <div class="weather-details">
-                <div class="weather-detail">
-                  <div class="detail-label" style="color: white !important;">湿度</div>
-                  <div class="detail-value" style="color: white !important;">{{ weatherData.humidity }}%</div>
-                </div>
-                <div class="weather-detail">
-                  <div class="detail-label" style="color: white !important;">风速</div>
-                  <div class="detail-value" style="color: white !important;">{{ weatherData.windSpeed }} km/h</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <WeatherCard 
+            :weatherData="weatherData"
+          />
           
           <!-- 待办事项卡片 -->
-          <div class="card todo-card" style="background: linear-gradient(135deg, rgba(46, 176, 134, 0.85), rgba(96, 221, 142, 0.75));">
-            <div class="card-header">
-              <h3>今日待办</h3>
-              <button class="add-btn" @click="addNewTodo">+</button>
-            </div>
-            <div class="card-content todo-content">
-              <div v-if="todos.length === 0" class="empty-state">暂无待办事项</div>
-              <ul class="todo-list" v-else>
-                <li v-for="(todo, index) in todos" :key="index" class="todo-item" :class="{ 'completed': todo.completed }">
-                  <input type="checkbox" :id="'todo-' + index" v-model="todo.completed">
-                  <label :for="'todo-' + index">{{ todo.text }}</label>
-                  <button class="delete-btn" @click="deleteTodo(index)">×</button>
-                </li>
-              </ul>
-              <div v-if="isAddingTodo" class="add-todo-form">
-                <input v-model="newTodoText" type="text" placeholder="输入新的待办事项" @keyup.enter="saveTodo">
-                <div class="form-buttons">
-                  <button @click="cancelAddTodo">取消</button>
-                  <button @click="saveTodo" class="save-btn">保存</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <TodoCard 
+            :initialTodos="todos"
+            @update:todos="updateTodos"
+          />
           
           <!-- 笔记卡片 -->
-          <div class="card notes-card" style="background: linear-gradient(135deg, rgba(255, 153, 0, 0.75), rgba(255, 183, 77, 0.7));">
-            <div class="card-header">
-              <h3>快速笔记</h3>
-            </div>
-            <div class="card-content">
-              <textarea v-model="noteContent" placeholder="在这里记录一些想法..."></textarea>
-            </div>
-          </div>
+          <NoteCard 
+            :initialNote="noteContent"
+            @update:note="updateNoteContent"
+          />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script src="../assets/js/HelloWorld.js"></script>
-<style src="../assets/css/HelloWorld.css"></style>
+<script>
+import TimeCard from './cards/TimeCard.vue';
+import WeatherCard from './cards/WeatherCard.vue';
+import TodoCard from './cards/TodoCard.vue';
+import NoteCard from './cards/NoteCard.vue';
+
+export default {
+  name: 'HelloWorld',
+  components: {
+    TimeCard,
+    WeatherCard,
+    TodoCard,
+    NoteCard
+  },
+  props: {
+    msg: String
+  },
+  data() {
+    return {
+      isFullscreen: false,
+      currentTime: '',
+      currentDate: '',
+      currentDay: '',
+      weatherData: {
+        location: '北京',
+        temperature: 22,
+        description: '多云',
+        humidity: 45,
+        windSpeed: 12,
+        icon: 'cloudy'  // sunny, cloudy, rainy
+      },
+      todos: [
+        { text: '完成设计方案', completed: false },
+        { text: '回复重要邮件', completed: true },
+        { text: '准备会议材料', completed: false }
+      ],
+      noteContent: '今天要记得：\n\n1. 查阅资料\n2. 联系客户\n3. 整理会议记录'
+    }
+  },
+  mounted() {
+    // 添加全屏监听
+    document.addEventListener('fullscreenchange', this.fullscreenChanged);
+    document.addEventListener('webkitfullscreenchange', this.fullscreenChanged);
+    document.addEventListener('mozfullscreenchange', this.fullscreenChanged);
+    document.addEventListener('MSFullscreenChange', this.fullscreenChanged);
+    
+    // 初始化时间
+    this.updateTime();
+    setInterval(this.updateTime, 1000);
+    
+    // 如果存在本地存储数据，加载它
+    this.loadLocalData();
+  },
+  beforeUnmount() {
+    // 移除全屏监听
+    document.removeEventListener('fullscreenchange', this.fullscreenChanged);
+    document.removeEventListener('webkitfullscreenchange', this.fullscreenChanged);
+    document.removeEventListener('mozfullscreenchange', this.fullscreenChanged);
+    document.removeEventListener('MSFullscreenChange', this.fullscreenChanged);
+  },
+  methods: {
+    toggleFullscreen() {
+      if (!this.isFullscreen) {
+        const docElm = document.documentElement;
+        if (docElm.requestFullscreen) {
+          docElm.requestFullscreen();
+        } else if (docElm.webkitRequestFullScreen) {
+          docElm.webkitRequestFullScreen();
+        } else if (docElm.mozRequestFullScreen) {
+          docElm.mozRequestFullScreen();
+        } else if (docElm.msRequestFullscreen) {
+          docElm.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    },
+    
+    fullscreenChanged() {
+      this.isFullscreen = !!(
+        document.fullscreenElement || 
+        document.webkitFullscreenElement || 
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
+      
+      const helloElement = document.querySelector('.hello');
+      if (helloElement) {
+        if (this.isFullscreen) {
+          helloElement.classList.add('fullscreen');
+        } else {
+          helloElement.classList.remove('fullscreen');
+        }
+      }
+    },
+    
+    updateTime() {
+      const now = new Date();
+      
+      // 格式化时间 (HH:MM)
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      this.currentTime = `${hours}:${minutes}`;
+      
+      // 格式化日期 (YYYY年MM月DD日)
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      this.currentDate = `${year}年${month}月${day}日`;
+      
+      // 获取星期
+      const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      this.currentDay = days[now.getDay()];
+    },
+    
+    updateTodos(newTodos) {
+      this.todos = newTodos;
+      this.saveLocalData();
+    },
+    
+    updateNoteContent(newContent) {
+      this.noteContent = newContent;
+      this.saveLocalData();
+    },
+    
+    saveLocalData() {
+      localStorage.setItem('daily-panel-todos', JSON.stringify(this.todos));
+      localStorage.setItem('daily-panel-notes', this.noteContent);
+    },
+    
+    loadLocalData() {
+      const savedTodos = localStorage.getItem('daily-panel-todos');
+      const savedNotes = localStorage.getItem('daily-panel-notes');
+      
+      if (savedTodos) {
+        this.todos = JSON.parse(savedTodos);
+      }
+      
+      if (savedNotes) {
+        this.noteContent = savedNotes;
+      }
+    }
+  }
+}
+</script>
+
+<style>
+/* 只保留面板和全局样式，卡片特定样式已移到各自组件中 */
+:root {
+  /* VisionOS 风格颜色变量 */
+  --visionos-bg: rgba(245, 245, 247, 0.01);
+  --visionos-panel: rgba(255, 255, 255, 0.7);  /* 半透明面板 */
+  --visionos-border: rgba(255, 255, 255, 0.2);
+  --visionos-shadow: rgba(0, 0, 0, 0.05);
+  --visionos-text: rgb(29, 29, 31);
+  --visionos-text-secondary: rgba(29, 29, 31, 0.7);
+  --visionos-accent: rgba(10, 132, 255, 0.8);
+  
+  /* 更新卡片颜色以更贴近 VisionOS 风格 */
+  --card-time-bg: rgba(10, 132, 255, 0.15);
+  --card-weather-bg: rgba(48, 209, 88, 0.15);
+  --card-todo-bg: rgba(255, 159, 10, 0.15);
+  --card-notes-bg: rgba(191, 90, 242, 0.15);
+}
+
+.hello {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--visionos-text);
+  z-index: 1;
+}
+
+.panel {
+  width: calc(100% - 48px);
+  height: calc(100% - 48px);
+  max-width: 1600px;
+  margin: 24px;
+  border-radius: 32px;
+  background-color: #ffffff !important; /* 确保应用纯白色背景 */
+  border: 1px solid var(--visionos-border);
+  box-shadow: 
+    0 10px 30px var(--visionos-shadow),
+    0 0 0 1px rgba(0, 0, 0, 0.02) inset;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  transform: none !important;
+  position: relative;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border-radius: 12px;
+  color: white;
+  margin-right: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.02em;
+  color: var(--visionos-text);
+}
+
+.fullscreen-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--visionos-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--visionos-text);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.fullscreen-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.fullscreen-btn:active {
+  transform: scale(0.98);
+}
+
+.panel-content {
+  flex: 1;
+  padding: 24px;
+  overflow: auto;
+}
+
+/* 卡片容器 */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+/* 通用卡片样式 - VisionOS 风格 */
+.card {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--visionos-border);
+  box-shadow: 
+    0 4px 30px rgba(0, 0, 0, 0.03),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  height: 100%;
+  min-height: 200px;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  will-change: transform;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1), 
+    rgba(255, 255, 255, 0.8), 
+    rgba(255, 255, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 
+    0 8px 40px rgba(0, 0, 0, 0.05),
+    0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--visionos-text);
+  letter-spacing: -0.01em;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+/* VisionOS 风格的滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* 适应全屏模式 */
+.hello.fullscreen .panel {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .panel {
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    margin: 12px;
+    border-radius: 24px;
+  }
+  
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .panel-header {
+    padding: 12px 16px;
+  }
+  
+  .panel-content {
+    padding: 16px;
+  }
+}
+</style>
