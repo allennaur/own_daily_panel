@@ -456,18 +456,18 @@ export default {
   overflow: auto;
 }
 
-/* 卡片容器 - 优化网格布局支持标准尺寸 */
+/* 卡片容器 - 优化网格布局支持标准尺寸，减小尺寸 */
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 基础宽度是4列 */
-  grid-auto-rows: minmax(150px, auto);
-  gap: 16px;
+  grid-template-columns: repeat(8, 1fr); /* 将列数增加一倍（4 → 8） */
+  grid-auto-rows: minmax(100px, auto); /* 将行高减小 (150px → 100px) */
+  gap: 12px; /* 减小间距（16px → 12px） */
   width: 100%;
 }
 
 /* 通用卡片样式 - VisionOS 风格 */
 .card {
-  border-radius: 24px;
+  border-radius: 18px; /* 减小圆角 (24px → 18px) */
   background: rgba(255, 255, 255, 0.7) !important;
   backdrop-filter: blur(30px);
   border: 1px solid var(--visionos-border);
@@ -476,7 +476,7 @@ export default {
     0 1px 3px rgba(0, 0, 0, 0.02);
   overflow: hidden;
   height: 100%;
-  min-height: 200px;
+  min-height: 100px;   /* 减小最小高度 (200px → 100px) */
   transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-style: preserve-3d;
   will-change: transform;
@@ -512,12 +512,12 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 20px;
+  padding: 12px 14px; /* 减小内边距 (18px 20px → 12px 14px) */
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .card-header h3 {
-  font-size: 16px;
+  font-size: 14px; /* 减小字体 (16px → 14px) */
   font-weight: 500;
   margin: 0;
   color: var(--visionos-text);
@@ -525,14 +525,15 @@ export default {
 }
 
 .card-content {
-  padding: 20px;
+  padding: 14px; /* 减小内边距 (20px → 14px) */
 }
 
-/* 卡片尺寸类 - 优化为标准比例 */
+/* 卡片尺寸类 - 调整为新的尺寸标准 */
 .card.card-small {
   grid-column: span 1; /* 1个单位宽 */
   grid-row: span 1;    /* 1个单位高 */
   aspect-ratio: 1/1;   /* 保持正方形 */
+  min-height: unset;   /* 移除最小高度限制 */
 }
 
 .card.card-medium {
@@ -622,7 +623,7 @@ export default {
   border-radius: 0;
 }
 
-/* 响应式设计 */
+/* 响应式设计 - 调整移动端显示 */
 @media (max-width: 768px) {
   .panel {
     width: calc(100% - 24px);
@@ -632,8 +633,8 @@ export default {
   }
   
   .cards-container {
-    grid-template-columns: repeat(2, 1fr); /* 手机上一排放两个小卡片 */
-    gap: 12px;
+    grid-template-columns: repeat(4, 1fr); /* 手机上网格减半 (2 → 4) */
+    gap: 8px; /* 进一步减小间隙 (12px → 8px) */
   }
   
   /* 在小屏幕上调整卡片尺寸 */
@@ -642,7 +643,7 @@ export default {
   }
   
   .card.card-large {
-    grid-column: span 2; /* 大型卡片占满宽度 */
+    grid-column: span 4; /* 大型卡片占满宽度 (2 → 4) */
     grid-row: span 2;    /* 保持高度 */
   }
   

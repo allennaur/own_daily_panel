@@ -142,24 +142,22 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 12px;
+  padding: 8px; /* 减小内边距 (12px → 8px) */
 }
 
 .weather-icon.small {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 8px;
+  width: 26px; /* 减小图标尺寸 (40px → 26px) */
+  height: 26px;
+  margin-bottom: 4px; /* 减小间距 (8px → 4px) */
 }
 
 .temperature.small {
-  font-size: 24px;
-  font-weight: 300;
-  margin-bottom: 4px;
+  font-size: 18px; /* 减小字体大小 (24px → 18px) */
+  margin-bottom: 2px; /* 减小间距 (4px → 2px) */
 }
 
 .location.small {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 9px; /* 减小字体大小 (12px → 9px) */
 }
 
 /* 中尺寸样式 */
@@ -167,7 +165,7 @@ export default {
   display: flex;
   justify-content: space-between; /* 内容横向分布 */
   align-items: center;
-  padding: 15px 10px;
+  padding: 10px 8px; /* 减小内边距 (15px 10px → 10px 8px) */
   height: 100%;
 }
 
@@ -187,7 +185,7 @@ export default {
 
 /* 大尺寸样式 */
 .card-header.large {
-  padding: 20px;
+  padding: 14px; /* 减小内边距 (20px → 14px) */
 }
 
 .weather-content.large {
@@ -302,9 +300,9 @@ export default {
 
 /* 现有样式保持不变 */
 .weather-icon {
-  width: 70px;
-  height: 70px;
-  margin-right: 20px;
+  width: 50px; /* 减小图标尺寸 (70px → 50px) */
+  height: 50px;
+  margin-right: 14px; /* 减小间距 (20px → 14px) */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

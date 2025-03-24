@@ -54,12 +54,12 @@ export default {
     visibleTodos() {
       // 根据卡片尺寸显示不同数量的待办项
       const maxItems = {
-        small: 2,
-        medium: 4,
-        large: 8
+        small: 1,    // 减少显示项（2 → 1）
+        medium: 2,   // 减少显示项（4 → 2）
+        large: 5     // 减少显示项（8 → 5）
       };
       
-      return this.todos.slice(0, maxItems[this.size] || 3);
+      return this.todos.slice(0, maxItems[this.size] || 2);
     },
     hasMoreTodos() {
       return this.todos.length > this.visibleTodos.length;
@@ -185,7 +185,7 @@ export default {
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 14px 20px;
+  padding: 8px 12px; /* 减小内边距 (14px 20px → 8px 12px) */
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
   transition: background-color 0.2s ease;
 }
@@ -204,10 +204,9 @@ export default {
 }
 
 .todo-item input[type="checkbox"] {
-  margin-right: 12px;
-  appearance: none;
-  width: 20px;
-  height: 20px;
+  margin-right: 8px; /* 减小间距 (12px → 8px) */
+  width: 16px; /* 减小复选框尺寸 (20px → 16px) */
+  height: 16px;
   border: 1.5px solid rgba(0, 0, 0, 0.2);
   border-radius: 50%;
   position: relative;
@@ -232,7 +231,7 @@ export default {
 
 .todo-item label {
   flex: 1;
-  font-size: 15px;
+  font-size: 13px; /* 减小字体大小 (15px → 13px) */
   color: var(--visionos-text);
   cursor: pointer;
   letter-spacing: -0.01em;
@@ -240,9 +239,9 @@ export default {
 
 .delete-btn {
   opacity: 0;
-  width: 24px;
-  height: 24px;
-  font-size: 18px;
+  width: 20px; /* 减小按钮尺寸 (24px → 20px) */
+  height: 20px;
+  font-size: 16px; /* 减小字体大小 (18px → 16px) */
   background: none;
   border: none;
   color: rgba(0, 0, 0, 0.3);
@@ -261,24 +260,24 @@ export default {
 
 .empty-state {
   text-align: center;
-  padding: 30px;
+  padding: 20px; /* 减小内边距 (30px → 20px) */
   color: var(--visionos-text-secondary);
-  font-size: 15px;
+  font-size: 13px; /* 减小字体大小 (15px → 13px) */
   opacity: 0.6;
 }
 
 .add-todo-form {
-  padding: 20px;
+  padding: 12px; /* 减小内边距 (20px → 12px) */
   border-top: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .add-todo-form input {
   width: 100%;
-  padding: 12px 15px;
+  padding: 8px 12px; /* 减小内边距 (12px 15px → 8px 12px) */
   border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  font-size: 15px;
-  margin-bottom: 16px;
+  border-radius: 10px; /* 减小圆角 (12px → 10px) */
+  font-size: 13px; /* 减小字体大小 (15px → 13px) */
+  margin-bottom: 12px; /* 保持间距 */
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(5px);
 }

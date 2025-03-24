@@ -99,11 +99,11 @@ export default {
 
 textarea {
   width: 100%;
-  height: 180px;
+  height: 100px; /* 减小默认高度 (180px → 100px) */
   border: none;
   background: transparent;
   resize: none;
-  font-size: 15px;
+  font-size: 13px; /* 减小字体大小 (15px → 13px) */
   color: var(--visionos-text);
   line-height: 22px; /* 与背景线条匹配 */
   font-family: inherit;
@@ -123,15 +123,16 @@ textarea:focus {
 
 /* 添加尺寸特定的样式 */
 .card-content.small textarea {
-  height: 100px;
+  height: 60px; /* 减小高度 (100px → 60px) */
+  font-size: 12px; /* 减小字体大小 */
 }
 
 .card-content.medium textarea {
-  height: 100px;
+  height: 70px; /* 减小高度 (100px → 70px) */
 }
 
 .card-content.large textarea {
-  height: 300px;
-  font-size: 16px;
+  height: 160px; /* 减小高度 (300px → 160px) */
+  font-size: 14px; /* 减小字体大小 (16px → 14px) */
 }
 </style>

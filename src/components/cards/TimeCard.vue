@@ -126,18 +126,18 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 10px;
+  padding: 6px; /* 减小内边距 (10px → 6px) */
 }
 
 .card-content.small .time {
-  font-size: 32px;
+  font-size: 20px; /* 减小字体大小 (32px → 20px) */
   font-weight: 300;
   line-height: 1;
   margin-bottom: 8px;
 }
 
 .card-content.small .small-date {
-  font-size: 14px;
+  font-size: 10px; /* 减小字体大小 (14px → 10px) */
   opacity: 0.7;
 }
 
@@ -148,13 +148,21 @@ export default {
   align-items: center;  /* 垂直居中对齐 */
   justify-content: space-between; /* 两侧对齐 */
   width: 100%;
-  padding: 16px;
+  padding: 10px; /* 减小内边距 (16px → 10px) */
   height: 100%;
 }
 
 .card-content.medium .time-section {
   flex: 1;
   text-align: left; /* 左对齐 */
+}
+
+.card-content.medium .time {
+  font-size: 32px; /* 减小字体大小 (48px → 32px) */
+}
+
+.card-content.medium .seconds {
+  font-size: 18px; /* 减小字体大小 (24px → 18px) */
 }
 
 .card-content.medium .date-section {
@@ -171,7 +179,7 @@ export default {
   justify-content: center;
   height: 100%;
   width: 100%;
-  padding: 20px;
+  padding: 14px; /* 减小内边距 (20px → 14px) */
 }
 
 .time-section.large {
@@ -182,12 +190,12 @@ export default {
 }
 
 .large-time {
-  font-size: 80px !important;
-  margin-bottom: 20px;
+  font-size: 48px !important; /* 调整字体大小 (80px → 48px) */
+  margin-bottom: 12px; /* 减小间距 (20px → 12px) */
 }
 
 .large-time .seconds {
-  font-size: 36px;
+  font-size: 24px; /* 减小字体大小 (36px → 24px) */
 }
 
 .date-section.large {
@@ -209,17 +217,17 @@ export default {
 }
 
 .large-date {
-  font-size: 22px;
+  font-size: 16px; /* 减小字体大小 (22px → 16px) */
   margin-bottom: 6px;
 }
 
 .large-day {
-  font-size: 18px;
+  font-size: 14px; /* 减小字体大小 (18px → 14px) */
   margin-bottom: 6px;
 }
 
 .large-lunar {
-  font-size: 18px;
+  font-size: 14px; /* 减小字体大小 (18px → 14px) */
   margin-top: 4px;
   background: linear-gradient(90deg, 
     rgba(191, 90, 242, 0.9),
