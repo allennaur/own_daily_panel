@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <HelloWorld msg="每日面板"/>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
 
 <style>
 :root {
-  --visionos-bg-color: rgb(238, 238, 240);
+  --visionos-bg-color: rgb(240, 240, 244);
 }
 
 * {
@@ -40,10 +40,6 @@ html, body {
   height: 100vh;
   background-color: var(--visionos-bg-color);
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  padding: 0;
+  overflow: hidden;
 }
 </style>
