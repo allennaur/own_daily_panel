@@ -82,7 +82,7 @@ export default {
     rgba(111, 66, 193, 1), 
     rgba(70, 26, 160, 0.95)
   ) !important;
-  color: #ffffff !important;
+  color: #333333 !important;
   position: relative;
   overflow: hidden;
 }
@@ -107,10 +107,10 @@ export default {
   z-index: 5 !important;
 }
 
-/* 明确强制所有文本为白色 */
+/* 明确强制所有文本为深色 */
 .time, .small-date, .date, .day {
-  color: #ffffff !important; 
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  color: #333333 !important; 
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
 }
 
 /* 确保时间样式正确 */
@@ -119,8 +119,8 @@ export default {
   font-weight: 600;
   line-height: 1;
   margin-bottom: 8px;
-  color: #ffffff !important;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  color: #333333 !important;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.3);
   position: relative;
   z-index: 10;
 }
@@ -131,7 +131,7 @@ export default {
     rgba(111, 66, 193, 0.95), 
     rgba(70, 26, 160, 0.9)
   ) !important;
-  color: white !important;
+  color: #333333 !important;
   position: relative;
   overflow: hidden;
 }
@@ -156,9 +156,9 @@ export default {
   z-index: 5 !important;
 }
 
-/* 所有文本元素强制使用白色 */
+/* 所有文本元素强制使用深色 */
 :deep(.card) * {
-  color: white !important;
+  color: #333333 !重要;
 }
 
 /* 修复装饰层覆盖文本问题 */
@@ -202,7 +202,7 @@ export default {
   font-weight: 600; /* 加粗时间显示 */
   line-height: 1;
   margin-bottom: 8px;
-  color: white !important;
+  color: #333333 !important;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 增强阴影提高可读性 */
   position: relative;
   z-index: 10;
@@ -222,7 +222,7 @@ export default {
 .small-date {
   font-size: 12px;
   opacity: 1; /* 提高不透明度 */
-  color: white;
+  color: #333333;
   font-weight: 500; /* 适度加粗 */
 }
 
@@ -283,13 +283,13 @@ export default {
 .date {
   font-size: 14px;
   font-weight: 500; /* 适度加粗 */
-  color: white;
+  color: #333333;
 }
 
 .day {
   font-size: 13px;
   opacity: 1; /* 提高不透明度 */
-  color: white;
+  color: #333333;
   font-weight: 500; /* 适度加粗 */
   padding: 2px 8px;
   background: rgba(255, 255, 255, 0.25); /* 增加背景对比度 */
@@ -303,7 +303,7 @@ export default {
   margin-top: 6px;
   background: linear-gradient(90deg, #ffe259, #ffa751);
   -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  -webkit-text-fill-color: transparent !重要;
   background-clip: text !important;
   display: inline-block;
   padding: 3px 8px;
@@ -391,7 +391,7 @@ export default {
 .large-day {
   font-size: 16px;
   margin-bottom: 12px;
-  color: white;
+  color: #333333;
   font-weight: 600; /* 加粗显示 */
   padding: 4px 14px;
   background: rgba(255, 255, 255, 0.25); /* 增加背景对比度 */

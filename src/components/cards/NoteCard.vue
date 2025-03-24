@@ -46,9 +46,11 @@ export default {
 /* 笔记卡片使用橙色主题 */
 :deep(.card) {
   background: linear-gradient(135deg,
-    rgba(255, 159, 10, 1),
-    rgba(255, 122, 0, 0.95)
+    rgba(255, 159, 10, 0.95),
+    rgba(255, 122, 0, 0.9)
   ) !important;
+  /* 修改默认文字颜色以提高可读性 */
+  color: rgba(0, 0, 0, 0.8) !important;
   position: relative;
   overflow: hidden;
 }
@@ -70,11 +72,11 @@ textarea {
   background: transparent;
   resize: none;
   font-size: 14px;
-  color: #333333 !important; /* 深灰色文本 */
-  line-height: 22px;
+  color: rgba(0, 0, 0, 0.85) !important; /* 改为深色文本以提高可读性 */
+  line-height: 22px; /* 与背景线条匹配 */
   font-family: inherit;
   position: relative;
-  z-index: 10;
+  z-index: 10 !important; /* 确保文本始终在顶层 */
   padding: 0;
   letter-spacing: -0.01em;
   font-weight: 500; /* 稍微加粗以提高可读性 */

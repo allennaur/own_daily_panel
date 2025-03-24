@@ -140,7 +140,13 @@ export default {
   z-index: 0;
 }
 
-/* 强制设置所有文本为白色 */
+/* 强制所有天气卡片文本为深色 */
+:deep(.card),
+:deep(.card) * {
+  color: #333333 !important;
+}
+
+/* 强制设置所有文本为深色 */
 :deep(.card-header) h3,
 .temperature,
 .weather-desc,
@@ -149,8 +155,8 @@ export default {
 .detail-value,
 .forecast-day,
 .forecast-temp {
-  color: #ffffff !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #333333 !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 /* 强调温度显示 */
@@ -159,8 +165,8 @@ export default {
   font-weight: 600;
   line-height: 1;
   margin-bottom: 6px;
-  color: #ffffff !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #333333 !important;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.3);
 }
 
 /* 天气描述使用半透明背景增强可读性 */
@@ -179,7 +185,7 @@ export default {
 .temperature.large {
   font-size: 48px;
   font-weight: 700;
-  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.9));
+  background: linear-gradient(180deg, #333333, rgba(51, 51, 51, 0.9));
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
@@ -190,11 +196,6 @@ export default {
 :deep(.card-content) {
   position: relative;
   z-index: 5 !important;
-}
-
-/* 所有文本元素强制使用白色 */
-:deep(.card) * {
-  color: white !important;
 }
 
 /* 小尺寸样式 */
@@ -451,8 +452,8 @@ export default {
 }
 
 :deep(.card-header h3) {
-  color: #ffffff !important;
-  font-weight: 600 !important;
+  color: #333333 !重要;
+  font-weight: 600 !重要;
   letter-spacing: -0.01em;
   z-index: 5;
 }

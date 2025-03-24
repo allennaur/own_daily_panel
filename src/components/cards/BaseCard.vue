@@ -177,7 +177,7 @@ export default {
   cursor: context-menu; /* 只在标题栏显示上下文菜单提示 */
 }
 
-/* 卡片标题栏 - 默认深色文本 */
+/* 卡片标题栏 - 设置默认文本颜色为深色 */
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -192,20 +192,20 @@ export default {
   font-size: 14px;
   font-weight: 600;
   margin: 0;
-  color: #333333; /* 默认深灰色，但会被卡片覆盖 */
   letter-spacing: -0.01em;
+  color: #333333; /* 默认深色文本 */
 }
 
-/* 卡片内容区域 */
+/* 卡片内容区域 - 设置默认文本颜色为深色 */
 .card-content {
   padding: 14px;
   height: calc(100% - 45px);
   position: relative;
   z-index: 5;
-  color: #333333; /* 默认内容文本颜色 */
+  color: #333333; /* 默认深色文本 */
 }
 
-/* 无标题栏卡片的内容区域 - 修复:has()选择器兼容性问题 */
+/* 无标题栏卡片的内容区域 */
 .card-content.no-header {
   height: 100%;
 }
@@ -222,6 +222,4 @@ export default {
 .card-content.large {
   padding: 16px;
 }
-
-/* 移除固定尺寸类，让HelloWorld处理位置和大小 */
 </style>

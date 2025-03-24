@@ -119,6 +119,7 @@ export default {
     rgba(46, 176, 134, 1),
     rgba(26, 115, 96, 0.95)
   ) !important;
+  color: #ffffff !important;
   position: relative;
   overflow: hidden;
 }
@@ -139,11 +140,11 @@ export default {
 
 /* 强制控制标题文字颜色 */
 :deep(.card-header) h3 {
-  color: #ffffff !important;
+  color: #333333 !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em;
   z-index: 5;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 /* 确保卡片内容处于顶层 */
@@ -157,8 +158,8 @@ export default {
   height: 24px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.3); /* 增加背景对比度 */
-  color: white !important;
+  background: rgba(0, 0, 0, 0.1);
+  color: #333333 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,7 +204,7 @@ export default {
 .todo-item.completed label {
   text-decoration: line-through;
   opacity: 0.6;
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(51, 51, 51, 0.7) !important;
 }
 
 .todo-item input[type="checkbox"] {
@@ -242,12 +243,12 @@ export default {
 .todo-item label {
   flex: 1;
   font-size: 14px;
-  color: #ffffff !important; /* 使用白色文本 */
+  color: #333333 !important; /* 使用深色文本 */
   font-weight: 400;
   cursor: pointer;
   transition: opacity 0.2s;
   letter-spacing: -0.01em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 .delete-btn {
@@ -275,7 +276,7 @@ export default {
 .empty-state {
   text-align: center;
   padding: 30px 20px;
-  color: #ffffff !important;
+  color: #333333 !important;
   font-size: 14px;
   font-style: italic;
   font-weight: 500;
@@ -295,12 +296,12 @@ export default {
 .add-todo-form input {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   font-size: 14px;
   margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.5);
+  color: #333333 !important;
   transition: all 0.2s;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
@@ -313,7 +314,7 @@ export default {
 }
 
 .add-todo-form input::placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(51, 51, 51, 0.7) !important;
 }
 
 .form-buttons {
@@ -330,8 +331,8 @@ export default {
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500; /* 适度加粗按钮文字 */
-  color: #ffffff !important;
-  background: rgba(0, 0, 0, 0.1);
+  color: #333333 !important;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .form-buttons button.save-btn {
@@ -359,12 +360,12 @@ export default {
   text-align: center;
   padding: 8px;
   font-size: 12px;
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.2);
+  color: #333333 !important;
+  background: rgba(255, 255, 255, 0.3);
   margin: 10px;
   border-radius: 8px;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 /* 特定尺寸下的样式调整 */
