@@ -19,6 +19,10 @@ export default {
     initialNote: {
       type: String,
       default: ''
+    },
+    cardType: {
+      type: String,
+      default: 'editable'
     }
   },
   data() {

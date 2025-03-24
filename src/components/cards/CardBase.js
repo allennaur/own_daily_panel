@@ -6,6 +6,12 @@ export const CardEffectMixin = {
       type: String,
       default: 'small', // small, medium, large
       validator: (value) => ['small', 'medium', 'large'].includes(value)
+    },
+    // 添加一个属性用于标识卡片类型
+    cardType: {
+      type: String,
+      default: 'readonly', // readonly 或 editable
+      validator: (value) => ['readonly', 'editable'].includes(value)
     }
   },
   computed: {
@@ -17,12 +23,15 @@ export const CardEffectMixin = {
     setupCardEffect(card) {
       if (!card) return;
       
+      // 基础效果（所有卡片都需要）
       card.addEventListener('mouseenter', this.handleCardMouseEnter);
       card.addEventListener('mousemove', this.handleCardMouseMove);
       card.addEventListener('mouseleave', this.handleCardMouseLeave);
       
-      // 下面这行代码根据具体组件决定是否需要
-      // card.addEventListener('contextmenu', this.handleContextMenu);
+      // 只为只读卡片添加右键菜单事件（可编辑卡片在标题处理）
+      if (this.cardType === 'readonly') {
+        card.addEventListener('contextmenu', this.handleContextMenu);
+      }
     },
     
     handleCardMouseEnter(e) {
@@ -48,9 +57,9 @@ export const CardEffectMixin = {
       card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
     },
     
-    // 更新右键处理方法以接受不同的元素来源
+    // 统一的右键菜单处理方法
     handleContextMenu(e) {
-      // 触发上下文菜单事件
+      e.preventDefault();
       this.$emit('context-menu', e);
     },
     
@@ -59,12 +68,15 @@ export const CardEffectMixin = {
     }
   },
   beforeUnmount() {
-    const card = this.$refs.card;
+    const card = this.$refs.card || this.$el;
     if (card) {
       card.removeEventListener('mouseenter', this.handleCardMouseEnter);
       card.removeEventListener('mousemove', this.handleCardMouseMove);
       card.removeEventListener('mouseleave', this.handleCardMouseLeave);
-      // card.removeEventListener('contextmenu', this.handleContextMenu);
+      
+      if (this.cardType === 'readonly') {
+        card.removeEventListener('contextmenu', this.handleContextMenu);
+      }
     }
   }
 };

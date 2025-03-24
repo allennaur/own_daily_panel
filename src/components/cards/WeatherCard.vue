@@ -1,5 +1,5 @@
 <template>
-  <div :class="['card', 'weather-card', cardSizeClass]" ref="weatherCard">
+  <div :class="['card', 'weather-card', cardSizeClass]" ref="weatherCard" @contextmenu="handleContextMenu">
     <!-- 小尺寸布局 - 简洁版 -->
     <template v-if="size === 'small'">
       <div class="card-content small">
@@ -103,10 +103,21 @@ export default {
     weatherData: {
       type: Object,
       required: true
+    },
+    cardType: {
+      type: String,
+      default: 'readonly'
     }
   },
   mounted() {
     this.setupCardEffect(this.$refs.weatherCard);
+  },
+  methods: {
+    // 添加handleContextMenu方法
+    handleContextMenu(e) {
+      e.preventDefault();
+      this.$emit('context-menu', e);
+    }
   },
   beforeUnmount() {
     const card = this.$refs.weatherCard;
@@ -131,9 +142,8 @@ export default {
   color: var(--visionos-text) !important;
   position: relative;
   overflow: hidden;
+  cursor: context-menu; /* 表示有右键菜单可用 */
 }
-
-/* ...existing code for background effects... */
 
 /* 小尺寸样式 */
 .card-content.small {

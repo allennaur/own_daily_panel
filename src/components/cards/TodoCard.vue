@@ -41,6 +41,10 @@ export default {
     initialTodos: {
       type: Array,
       default: () => []
+    },
+    cardType: {
+      type: String,
+      default: 'editable'
     }
   },
   data() {

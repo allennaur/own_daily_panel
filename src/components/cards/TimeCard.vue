@@ -1,5 +1,5 @@
 <template>
-  <div :class="['card', 'time-card', cardSizeClass]" ref="timeCard">
+  <div :class="['card', 'time-card', cardSizeClass]" ref="timeCard" @contextmenu="handleContextMenu">
     <div class="card-content" :class="{ 'small': size === 'small', 'medium': size === 'medium', 'large': size === 'large' }">
       <!-- 小尺寸布局 - 简洁时间 -->
       <template v-if="size === 'small'">
@@ -48,6 +48,10 @@ export default {
     date: String,
     day: String,
     lunar: String,
+    cardType: {
+      type: String,
+      default: 'readonly'
+    }
   },
   computed: {
     smallDateFormat() {
@@ -65,6 +69,13 @@ export default {
   },
   mounted() {
     this.setupCardEffect(this.$refs.timeCard);
+  },
+  methods: {
+    // 添加handleContextMenu方法
+    handleContextMenu(e) {
+      e.preventDefault();
+      this.$emit('context-menu', e);
+    }
   },
   beforeUnmount() {
     const card = this.$refs.timeCard;
@@ -93,6 +104,7 @@ export default {
   position: relative;
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: context-menu; /* 表示有右键菜单可用 */
 }
 
 /* 卡片尺寸过渡动画 */
