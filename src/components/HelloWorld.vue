@@ -359,23 +359,24 @@ export default {
 </script>
 
 <style>
-/* 只保留面板和全局样式，卡片特定样式已移到各自组件中 */
+/* 只需要保留面板和全局样式，卡片特定样式已移到各自组件中 */
 :root {
   /* VisionOS 风格颜色变量 */
   --visionos-bg: rgba(245, 245, 247, 0.01);
-  --visionos-panel: rgba(255, 255, 255, 0.7);  /* 半透明面板 */
+  --visionos-panel: rgba(255, 255, 255, 0.7);
   --visionos-border: rgba(255, 255, 255, 0.2);
   --visionos-shadow: rgba(0, 0, 0, 0.05);
   --visionos-text: rgb(29, 29, 31);
   --visionos-text-secondary: rgba(29, 29, 31, 0.7);
   --visionos-accent: rgba(10, 132, 255, 0.8);
-  
-  /* 更新卡片颜色以更贴近 VisionOS 风格 */
-  --card-time-bg: rgba(10, 132, 255, 0.15);
-  --card-weather-bg: rgba(48, 209, 88, 0.15);
-  --card-todo-bg: rgba(255, 159, 10, 0.15);
-  --card-notes-bg: rgba(191, 90, 242, 0.15);
 }
+
+/* 移除通用卡片样式，因为已经在 BaseCard 中定义 */
+.card, .card-small, .card-medium, .card-large {
+  /* 样式已移动到 BaseCard.vue */
+}
+
+/* 保留其他样式... */
 
 .hello {
   width: 100%;

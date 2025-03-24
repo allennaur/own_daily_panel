@@ -1,0 +1,239 @@
+<template>
+  <div 
+    :class="['card', cardTypeClass, cardSizeClass]" 
+    ref="card"
+    @contextmenu="handleCardContextMenu">
+    <!-- 卡片头部 -->
+    <div 
+      v-if="showHeader" 
+      class="card-header" 
+      @contextmenu="handleHeaderContextMenu">
+      <h3><slot name="header-title">{{ title }}</slot></h3>
+      <slot name="header-actions"></slot>
+    </div>
+    
+    <!-- 卡片内容 -->
+    <div class="card-content" :class="size">
+      <slot></slot>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'BaseCard',
+  props: {
+    // 卡片尺寸：小(1x1)、中(2x1)、大(2x2)
+    size: {
+      type: String,
+      default: 'small',
+      validator: (value) => ['small', 'medium', 'large'].includes(value)
+    },
+    // 卡片类型：只读(整卡右键菜单)或可编辑(仅头部右键菜单)
+    type: {
+      type: String,
+      default: 'readonly',
+      validator: (value) => ['readonly', 'editable'].includes(value)
+    },
+    // 是否显示标题栏
+    showHeader: {
+      type: Boolean,
+      default: true
+    },
+    // 卡片标题
+    title: {
+      type: String,
+      default: ''
+    }
+  },
+  computed: {
+    cardSizeClass() {
+      return `card-${this.size}`;
+    },
+    cardTypeClass() {
+      return `card-${this.type}`;
+    }
+  },
+  mounted() {
+    this.setupCardEffect();
+  },
+  methods: {
+    setupCardEffect() {
+      const card = this.$refs.card;
+      if (!card) return;
+      
+      // 基础交互效果
+      card.addEventListener('mouseenter', this.handleMouseEnter);
+      card.addEventListener('mousemove', this.handleMouseMove);
+      card.addEventListener('mouseleave', this.handleMouseLeave);
+    },
+    
+    handleMouseEnter(e) {
+      const card = e.currentTarget;
+      card.style.transition = 'transform 0.2s ease-out';
+    },
+    
+    handleMouseMove(e) {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const cardCenterX = rect.left + rect.width / 2;
+      const cardCenterY = rect.top + rect.height / 2;
+      
+      const cardMoveX = (e.clientX - cardCenterX) / (rect.width / 2) * 5;
+      const cardMoveY = (e.clientY - cardCenterY) / (rect.height / 2) * 5;
+      
+      card.style.transform = `perspective(1000px) rotateX(${-cardMoveY}deg) rotateY(${cardMoveX}deg)`;
+    },
+    
+    handleMouseLeave(e) {
+      const card = e.currentTarget;
+      card.style.transition = 'transform 0.5s ease-out';
+      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    },
+    
+    // 右键菜单处理 - 根据卡片类型决定行为
+    handleCardContextMenu(e) {
+      // 只有只读卡片允许整卡右键菜单
+      if (this.type === 'readonly') {
+        e.preventDefault();
+        this.$emit('context-menu', e);
+      }
+    },
+    
+    // 标题区域右键菜单 - 所有卡片类型都可用
+    handleHeaderContextMenu(e) {
+      e.preventDefault();
+      this.$emit('context-menu', e);
+    },
+    
+    // 切换卡片尺寸
+    changeSize(newSize) {
+      this.$emit('size-change', newSize);
+    }
+  },
+  beforeUnmount() {
+    const card = this.$refs.card;
+    if (card) {
+      card.removeEventListener('mouseenter', this.handleMouseEnter);
+      card.removeEventListener('mousemove', this.handleMouseMove);
+      card.removeEventListener('mouseleave', this.handleMouseLeave);
+    }
+  }
+}
+</script>
+
+<style scoped>
+/* 基础卡片样式 */
+.card {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--visionos-border);
+  box-shadow: 
+    0 4px 30px rgba(0, 0, 0, 0.03),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  height: 100%;
+  min-height: 100px;
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  will-change: transform;
+  position: relative;
+}
+
+/* 卡片悬停光效 */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1), 
+    rgba(255, 255, 255, 0.8), 
+    rgba(255, 255, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 
+    0 8px 40px rgba(0, 0, 0, 0.05),
+    0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* 卡片类型样式 */
+.card-readonly {
+  cursor: context-menu; /* 提示右键菜单可用 */
+}
+
+.card-editable .card-header {
+  cursor: context-menu; /* 只在标题栏显示上下文菜单提示 */
+}
+
+/* 卡片标题栏 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.card-header h3 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--visionos-text);
+  letter-spacing: -0.01em;
+}
+
+/* 卡片内容区域 */
+.card-content {
+  padding: 14px;
+  height: calc(100% - 45px); /* 考虑了标题栏高度 */
+}
+
+/* 无标题栏卡片的内容区域 */
+.card:not(:has(.card-header)) .card-content {
+  height: 100%;
+}
+
+/* 卡片尺寸类 */
+.card.card-small {
+  grid-column: span 1;
+  grid-row: span 1;
+  aspect-ratio: 1/1;
+  min-height: unset;
+}
+
+.card.card-medium {
+  grid-column: span 2;
+  grid-row: span 1;
+  aspect-ratio: 2/1;
+}
+
+.card.card-large {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: 1/1;
+}
+
+/* 不同尺寸内容样式 */
+.card-content.small {
+  padding: 10px;
+}
+
+.card-content.medium {
+  padding: 12px;
+}
+
+.card-content.large {
+  padding: 16px;
+}
+</style>

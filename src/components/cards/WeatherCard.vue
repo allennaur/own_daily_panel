@@ -1,8 +1,18 @@
 <template>
-  <div :class="['card', 'weather-card', cardSizeClass]" ref="weatherCard" @contextmenu="handleContextMenu">
+  <BaseCard 
+    :size="size" 
+    type="readonly" 
+    :showHeader="size !== 'small'"
+    :title="size === 'medium' ? '天气' : '天气预报'"
+    @context-menu="$emit('context-menu', $event)">
+    
+    <template v-if="size === 'medium' || size === 'large'" v-slot:header-actions>
+      <span class="location">{{ weatherData.location }}</span>
+    </template>
+    
     <!-- 小尺寸布局 - 简洁版 -->
     <template v-if="size === 'small'">
-      <div class="card-content small">
+      <div class="weather-content small">
         <div class="weather-icon small" :class="weatherData.icon"></div>
         <div class="temperature small">{{ weatherData.temperature }}°</div>
         <div class="location small">{{ weatherData.location }}</div>
@@ -11,11 +21,7 @@
     
     <!-- 中尺寸布局 - 标准版 -->
     <template v-else-if="size === 'medium'">
-      <div class="card-header">
-        <h3>天气</h3>
-        <span class="location">{{ weatherData.location }}</span>
-      </div>
-      <div class="card-content weather-content medium">
+      <div class="weather-content medium">
         <div class="weather-icon" :class="weatherData.icon"></div>
         <div class="weather-info">
           <div class="temperature">{{ weatherData.temperature }}°</div>
@@ -36,11 +42,7 @@
     
     <!-- 大尺寸布局 - 详细版 -->
     <template v-else>
-      <div class="card-header large">
-        <h3>天气预报</h3>
-        <span class="location">{{ weatherData.location }}</span>
-      </div>
-      <div class="card-content weather-content large">
+      <div class="weather-content large">
         <div class="current-weather">
           <div class="weather-icon large" :class="weatherData.icon"></div>
           <div class="weather-main">
@@ -90,92 +92,68 @@
         </div>
       </div>
     </template>
-  </div>
+  </BaseCard>
 </template>
 
 <script>
-import { CardEffectMixin } from './CardBase.js';
+import BaseCard from './BaseCard.vue';
 
 export default {
   name: 'WeatherCard',
-  mixins: [CardEffectMixin],
+  components: { BaseCard },
   props: {
+    size: {
+      type: String,
+      default: 'small'
+    },
     weatherData: {
       type: Object,
       required: true
-    },
-    cardType: {
-      type: String,
-      default: 'readonly'
-    }
-  },
-  mounted() {
-    this.setupCardEffect(this.$refs.weatherCard);
-  },
-  methods: {
-    // 添加handleContextMenu方法
-    handleContextMenu(e) {
-      e.preventDefault();
-      this.$emit('context-menu', e);
-    }
-  },
-  beforeUnmount() {
-    const card = this.$refs.weatherCard;
-    if (card) {
-      card.removeEventListener('mouseenter', this.handleCardMouseEnter);
-      card.removeEventListener('mousemove', this.handleCardMouseMove);
-      card.removeEventListener('mouseleave', this.handleCardMouseLeave);
-      card.removeEventListener('contextmenu', this.handleContextMenu);
     }
   }
 }
 </script>
 
 <style scoped>
-/* 基础样式 */
-.weather-card {
+:deep(.card) {
   background: linear-gradient(
     135deg,
     rgba(48, 209, 88, 0.1),
     rgba(52, 199, 89, 0.15)
   ) !important;
-  color: var(--visionos-text) !important;
-  position: relative;
-  overflow: hidden;
-  cursor: context-menu; /* 表示有右键菜单可用 */
 }
 
 /* 小尺寸样式 */
-.card-content.small {
+.weather-content.small {
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 8px; /* 减小内边距 (12px → 8px) */
+  padding: 8px;
 }
 
 .weather-icon.small {
-  width: 26px; /* 减小图标尺寸 (40px → 26px) */
+  width: 26px;
   height: 26px;
-  margin-bottom: 4px; /* 减小间距 (8px → 4px) */
+  margin-bottom: 4px;
 }
 
 .temperature.small {
-  font-size: 18px; /* 减小字体大小 (24px → 18px) */
-  margin-bottom: 2px; /* 减小间距 (4px → 2px) */
+  font-size: 18px;
+  margin-bottom: 2px;
 }
 
 .location.small {
-  font-size: 9px; /* 减小字体大小 (12px → 9px) */
+  font-size: 9px;
 }
 
 /* 中尺寸样式 */
 .weather-content.medium {
   display: flex;
-  justify-content: space-between; /* 内容横向分布 */
+  justify-content: space-between;
   align-items: center;
-  padding: 10px 8px; /* 减小内边距 (15px 10px → 10px 8px) */
+  padding: 10px 8px;
   height: 100%;
 }
 
@@ -183,7 +161,7 @@ export default {
   flex: 1;
 }
 
-.weather-details.medium {
+.weather-details {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -194,15 +172,11 @@ export default {
 }
 
 /* 大尺寸样式 */
-.card-header.large {
-  padding: 14px; /* 减小内边距 (20px → 14px) */
-}
-
 .weather-content.large {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 60px);
-  padding: 0 20px 20px;
+  height: 100%;
+  padding: 0;
 }
 
 .current-weather {
@@ -308,11 +282,11 @@ export default {
   font-size: 12px;
 }
 
-/* 现有样式保持不变 */
+/* 通用图标样式 */
 .weather-icon {
-  width: 50px; /* 减小图标尺寸 (70px → 50px) */
+  width: 50px;
   height: 50px;
-  margin-right: 14px; /* 减小间距 (20px → 14px) */
+  margin-right: 14px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -327,5 +301,29 @@ export default {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%230A84FF"><path d="M19 18H6a4 4 0 1 1 0-8h.71A5.5 5.5 0 0 1 18 7.5v.5a4 4 0 0 1 1 7.89z"/></svg>');
 }
 
-/* ...existing styles... */
+/* 顶部位置显示 */
+.location {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.temperature {
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.weather-desc {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.detail-label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 500;
+}
 </style>

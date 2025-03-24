@@ -1,28 +1,32 @@
 <template>
-  <div :class="['card', 'notes-card', cardSizeClass]" ref="noteCard">
-    <div class="card-header" @contextmenu="handleHeaderContextMenu">
-      <h3>快速笔记</h3>
-    </div>
-    <div :class="['card-content', size]">
-      <textarea v-model="noteText" placeholder="在这里记录一些想法..." @input="updateNote"></textarea>
-    </div>
-  </div>
+  <BaseCard 
+    :size="size" 
+    type="editable" 
+    title="快速笔记"
+    @context-menu="$emit('context-menu', $event)">
+    
+    <textarea 
+      v-model="noteText" 
+      placeholder="在这里记录一些想法..." 
+      @input="updateNote"
+      :class="size"></textarea>
+  </BaseCard>
 </template>
 
 <script>
-import { CardEffectMixin } from './CardBase.js';
+import BaseCard from './BaseCard.vue';
 
 export default {
   name: 'NoteCard',
-  mixins: [CardEffectMixin],
+  components: { BaseCard },
   props: {
+    size: {
+      type: String,
+      default: 'small'
+    },
     initialNote: {
       type: String,
       default: ''
-    },
-    cardType: {
-      type: String,
-      default: 'editable'
     }
   },
   data() {
@@ -30,69 +34,16 @@ export default {
       noteText: this.initialNote
     };
   },
-  mounted() {
-    this.setupCardEffect(this.$refs.noteCard);
-  },
   methods: {
-    setupCardEffect(card) {
-      if (!card) return;
-      
-      card.addEventListener('mouseenter', this.handleCardMouseEnter);
-      card.addEventListener('mousemove', this.handleCardMouseMove);
-      card.addEventListener('mouseleave', this.handleCardMouseLeave);
-      
-      // 移除整个卡片的右键菜单事件（让标题区域处理）
-      // card.addEventListener('contextmenu', this.handleContextMenu);
-    },
-    
-    handleCardMouseEnter(e) {
-      const card = e.currentTarget;
-      card.style.transition = 'transform 0.2s ease-out';
-    },
-    
-    handleCardMouseMove(e) {
-      const card = e.currentTarget;
-      const rect = card.getBoundingClientRect();
-      const cardCenterX = rect.left + rect.width / 2;
-      const cardCenterY = rect.top + rect.height / 2;
-      
-      const cardMoveX = (e.clientX - cardCenterX) / (rect.width / 2) * 5;
-      const cardMoveY = (e.clientY - cardCenterY) / (rect.height / 2) * 5;
-      
-      card.style.transform = `perspective(1000px) rotateX(${-cardMoveY}deg) rotateY(${cardMoveX}deg)`;
-    },
-    
-    handleCardMouseLeave(e) {
-      const card = e.currentTarget;
-      card.style.transition = 'transform 0.5s ease-out';
-      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-    },
-    
     updateNote() {
       this.$emit('update:note', this.noteText);
-    },
-    
-    // 添加标题区域的右键菜单处理
-    handleHeaderContextMenu(e) {
-      // 阻止默认右键菜单
-      e.preventDefault();
-      // 触发父组件的右键菜单处理
-      this.$emit('context-menu', e);
-    }
-  },
-  beforeUnmount() {
-    const card = this.$refs.noteCard;
-    if (card) {
-      card.removeEventListener('mouseenter', this.handleCardMouseEnter);
-      card.removeEventListener('mousemove', this.handleCardMouseMove);
-      card.removeEventListener('mouseleave', this.handleCardMouseLeave);
     }
   }
 }
 </script>
 
 <style scoped>
-.notes-card {
+:deep(.card) {
   background: linear-gradient(
     135deg,
     rgba(191, 90, 242, 0.1),
@@ -101,10 +52,10 @@ export default {
   position: relative;
 }
 
-.notes-card::before {
+:deep(.card-content)::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: 45px; /* 标题栏下方开始 */
   right: 0;
   bottom: 0;
   left: 0;
@@ -114,11 +65,11 @@ export default {
 
 textarea {
   width: 100%;
-  height: 100px; /* 减小默认高度 (180px → 100px) */
+  height: calc(100% - 10px);
   border: none;
   background: transparent;
   resize: none;
-  font-size: 13px; /* 减小字体大小 (15px → 13px) */
+  font-size: 13px;
   color: var(--visionos-text);
   line-height: 22px; /* 与背景线条匹配 */
   font-family: inherit;
@@ -136,23 +87,18 @@ textarea:focus {
   outline: none;
 }
 
-/* 添加尺寸特定的样式 */
-.card-content.small textarea {
-  height: 60px; /* 减小高度 (100px → 60px) */
-  font-size: 12px; /* 减小字体大小 */
+/* 尺寸特定样式 */
+textarea.small {
+  font-size: 12px;
+  height: 60px;
 }
 
-.card-content.medium textarea {
-  height: 70px; /* 减小高度 (100px → 70px) */
+textarea.medium {
+  height: 70px;
 }
 
-.card-content.large textarea {
-  height: 160px; /* 减小高度 (300px → 160px) */
-  font-size: 14px; /* 减小字体大小 (16px → 14px) */
-}
-
-/* 使标题区域明确可操作 */
-.card-header {
-  cursor: context-menu; /* 提示用户可以右键点击 */
+textarea.large {
+  height: 100%;
+  font-size: 14px;
 }
 </style>

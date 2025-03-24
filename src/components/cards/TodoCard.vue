@@ -1,10 +1,15 @@
 <template>
-  <div :class="['card', 'todo-card', cardSizeClass]" ref="todoCard">
-    <div class="card-header" @contextmenu="handleHeaderContextMenu">
-      <h3>今日待办</h3>
+  <BaseCard 
+    :size="size" 
+    type="editable" 
+    title="今日待办"
+    @context-menu="$emit('context-menu', $event)">
+    
+    <template v-slot:header-actions>
       <button class="add-btn" @click="addNewTodo">+</button>
-    </div>
-    <div class="card-content todo-content" :class="size">
+    </template>
+    
+    <div class="todo-content" :class="size">
       <!-- 不同尺寸下显示不同数量的待办项 -->
       <div v-if="visibleTodos.length === 0" class="empty-state">暂无待办事项</div>
       <ul class="todo-list" v-else>
@@ -28,23 +33,23 @@
         </div>
       </div>
     </div>
-  </div>
+  </BaseCard>
 </template>
 
 <script>
-import { CardEffectMixin } from './CardBase.js';
+import BaseCard from './BaseCard.vue';
 
 export default {
   name: 'TodoCard',
-  mixins: [CardEffectMixin],
+  components: { BaseCard },
   props: {
+    size: {
+      type: String,
+      default: 'small'
+    },
     initialTodos: {
       type: Array,
       default: () => []
-    },
-    cardType: {
-      type: String,
-      default: 'editable'
     }
   },
   data() {
@@ -58,9 +63,9 @@ export default {
     visibleTodos() {
       // 根据卡片尺寸显示不同数量的待办项
       const maxItems = {
-        small: 1,    // 减少显示项（2 → 1）
-        medium: 2,   // 减少显示项（4 → 2）
-        large: 5     // 减少显示项（8 → 5）
+        small: 1,
+        medium: 2,
+        large: 5
       };
       
       return this.todos.slice(0, maxItems[this.size] || 2);
@@ -70,40 +75,6 @@ export default {
     }
   },
   methods: {
-    setupCardEffect(card) {
-      if (!card) return;
-      
-      card.addEventListener('mouseenter', this.handleCardMouseEnter);
-      card.addEventListener('mousemove', this.handleCardMouseMove);
-      card.addEventListener('mouseleave', this.handleCardMouseLeave);
-      
-      // 移除整个卡片的右键菜单事件（让标题区域处理）
-      // card.addEventListener('contextmenu', this.handleContextMenu);
-    },
-    
-    handleCardMouseEnter(e) {
-      const card = e.currentTarget;
-      card.style.transition = 'transform 0.2s ease-out';
-    },
-    
-    handleCardMouseMove(e) {
-      const card = e.currentTarget;
-      const rect = card.getBoundingClientRect();
-      const cardCenterX = rect.left + rect.width / 2;
-      const cardCenterY = rect.top + rect.height / 2;
-      
-      const cardMoveX = (e.clientX - cardCenterX) / (rect.width / 2) * 5;
-      const cardMoveY = (e.clientY - cardCenterY) / (rect.height / 2) * 5;
-      
-      card.style.transform = `perspective(1000px) rotateX(${-cardMoveY}deg) rotateY(${cardMoveX}deg)`;
-    },
-    
-    handleCardMouseLeave(e) {
-      const card = e.currentTarget;
-      card.style.transition = 'transform 0.5s ease-out';
-      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-    },
-    
     addNewTodo() {
       this.isAddingTodo = true;
       this.$nextTick(() => {
@@ -136,40 +107,23 @@ export default {
     
     updateTodo() {
       this.$emit('update:todos', [...this.todos]);
-    },
-    
-    // 添加标题区域的右键菜单处理
-    handleHeaderContextMenu(e) {
-      // 阻止默认右键菜单
-      e.preventDefault();
-      // 触发父组件的右键菜单处理
-      this.$emit('context-menu', e);
-    }
-  },
-  beforeUnmount() {
-    const card = this.$refs.todoCard;
-    if (card) {
-      card.removeEventListener('mouseenter', this.handleCardMouseEnter);
-      card.removeEventListener('mousemove', this.handleCardMouseMove);
-      card.removeEventListener('mouseleave', this.handleCardMouseLeave);
     }
   }
 }
 </script>
 
 <style scoped>
-.todo-card {
+:deep(.card) {
   background: linear-gradient(
     135deg,
     rgba(255, 159, 10, 0.1),
     rgba(255, 179, 64, 0.15)
   ) !important;
-  position: relative;
 }
 
 .add-btn {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
   background: rgba(0, 0, 0, 0.05);
@@ -200,7 +154,7 @@ export default {
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 8px 12px; /* 减小内边距 (14px 20px → 8px 12px) */
+  padding: 8px 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
   transition: background-color 0.2s ease;
 }
@@ -219,8 +173,8 @@ export default {
 }
 
 .todo-item input[type="checkbox"] {
-  margin-right: 8px; /* 减小间距 (12px → 8px) */
-  width: 16px; /* 减小复选框尺寸 (20px → 16px) */
+  margin-right: 8px;
+  width: 16px;
   height: 16px;
   border: 1.5px solid rgba(0, 0, 0, 0.2);
   border-radius: 50%;
@@ -246,7 +200,7 @@ export default {
 
 .todo-item label {
   flex: 1;
-  font-size: 13px; /* 减小字体大小 (15px → 13px) */
+  font-size: 13px;
   color: var(--visionos-text);
   cursor: pointer;
   letter-spacing: -0.01em;
@@ -254,9 +208,9 @@ export default {
 
 .delete-btn {
   opacity: 0;
-  width: 20px; /* 减小按钮尺寸 (24px → 20px) */
+  width: 20px;
   height: 20px;
-  font-size: 16px; /* 减小字体大小 (18px → 16px) */
+  font-size: 16px;
   background: none;
   border: none;
   color: rgba(0, 0, 0, 0.3);
@@ -275,24 +229,24 @@ export default {
 
 .empty-state {
   text-align: center;
-  padding: 20px; /* 减小内边距 (30px → 20px) */
+  padding: 20px;
   color: var(--visionos-text-secondary);
-  font-size: 13px; /* 减小字体大小 (15px → 13px) */
+  font-size: 13px;
   opacity: 0.6;
 }
 
 .add-todo-form {
-  padding: 12px; /* 减小内边距 (20px → 12px) */
+  padding: 12px;
   border-top: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .add-todo-form input {
   width: 100%;
-  padding: 8px 12px; /* 减小内边距 (12px 15px → 8px 12px) */
+  padding: 8px 12px;
   border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 10px; /* 减小圆角 (12px → 10px) */
-  font-size: 13px; /* 减小字体大小 (15px → 13px) */
-  margin-bottom: 12px; /* 保持间距 */
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 12px;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(5px);
 }
@@ -328,34 +282,32 @@ export default {
   background: rgba(10, 132, 255, 0.9);
 }
 
-/* 添加尺寸特定的样式 */
-.todo-content.small {
-  max-height: calc(100% - 60px);
-  overflow-y: auto;
-}
-
-.todo-content.medium {
-  max-height: calc(100% - 60px);
-  overflow-y: auto;
-}
-
-.todo-content.large {
-  max-height: calc(100% - 60px);
+/* 尺寸特定样式 */
+.todo-content {
+  max-height: calc(100% - 45px);
   overflow-y: auto;
 }
 
 .more-todos {
   text-align: center;
-  padding: 10px;
-  font-size: 13px;
+  padding: 8px;
+  font-size: 12px;
   color: rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.2);
   margin-top: 5px;
   border-radius: 8px;
 }
 
-/* 使标题区域明确可操作 */
-.card-header {
-  cursor: context-menu; /* 提示用户可以右键点击 */
+/* 特定尺寸下的样式调整 */
+.todo-content.small .todo-item {
+  padding: 6px 10px;
+}
+
+.todo-content.small .todo-item label {
+  font-size: 12px;
+}
+
+.todo-content.large .todo-item {
+  padding: 10px 15px;
 }
 </style>

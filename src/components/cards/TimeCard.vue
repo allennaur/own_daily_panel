@@ -1,6 +1,11 @@
 <template>
-  <div :class="['card', 'time-card', cardSizeClass]" ref="timeCard" @contextmenu="handleContextMenu">
-    <div class="card-content" :class="{ 'small': size === 'small', 'medium': size === 'medium', 'large': size === 'large' }">
+  <BaseCard 
+    :size="size" 
+    type="readonly" 
+    :showHeader="false"
+    ref="timeCard"
+    @context-menu="$emit('context-menu', $event)">
+    <template v-slot:default>
       <!-- 小尺寸布局 - 简洁时间 -->
       <template v-if="size === 'small'">
         <div class="time">{{ time.substring(0, 5) }}</div>
@@ -33,25 +38,25 @@
           <div class="time-decoration"></div>
         </div>
       </template>
-    </div>
-  </div>
+    </template>
+  </BaseCard>
 </template>
 
 <script>
-import { CardEffectMixin } from './CardBase.js';
+import BaseCard from './BaseCard.vue';
 
 export default {
   name: 'TimeCard',
-  mixins: [CardEffectMixin],
+  components: { BaseCard },
   props: {
+    size: {
+      type: String,
+      default: 'small'
+    },
     time: String,
     date: String,
     day: String,
     lunar: String,
-    cardType: {
-      type: String,
-      default: 'readonly'
-    }
   },
   computed: {
     smallDateFormat() {
@@ -65,25 +70,6 @@ export default {
       } catch (e) {
         return this.date;
       }
-    }
-  },
-  mounted() {
-    this.setupCardEffect(this.$refs.timeCard);
-  },
-  methods: {
-    // 添加handleContextMenu方法
-    handleContextMenu(e) {
-      e.preventDefault();
-      this.$emit('context-menu', e);
-    }
-  },
-  beforeUnmount() {
-    const card = this.$refs.timeCard;
-    if (card) {
-      card.removeEventListener('mouseenter', this.handleCardMouseEnter);
-      card.removeEventListener('mousemove', this.handleCardMouseMove);
-      card.removeEventListener('mouseleave', this.handleCardMouseLeave);
-      card.removeEventListener('contextmenu', this.handleContextMenu);
     }
   }
 }
@@ -103,17 +89,10 @@ export default {
   text-align: center;
   position: relative;
   overflow: hidden;
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  cursor: context-menu; /* 表示有右键菜单可用 */
 }
 
-/* 卡片尺寸过渡动画 */
-.card {
-  transition: grid-row 0.3s ease-out, grid-column 0.3s ease-out, height 0.3s ease-out;
-}
-
-/* 通用样式... */
-.time-card::after {
+/* 时间卡片脉冲效果 */
+:deep(.card)::after {
   content: '';
   position: absolute;
   top: -50%;
@@ -131,67 +110,97 @@ export default {
   100% { opacity: 0.3; transform: scale(1.2); }
 }
 
-/* 小尺寸样式 - 紧凑型正方形 */
-.card-content.small {
+/* 小尺寸样式 */
+:deep(.card-content.small) {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 6px; /* 减小内边距 (10px → 6px) */
 }
 
-.card-content.small .time {
-  font-size: 20px; /* 减小字体大小 (32px → 20px) */
+.time {
+  font-size: 20px;
   font-weight: 300;
   line-height: 1;
   margin-bottom: 8px;
 }
 
-.card-content.small .small-date {
-  font-size: 10px; /* 减小字体大小 (14px → 10px) */
+.small-date {
+  font-size: 10px;
   opacity: 0.7;
 }
 
-/* 中尺寸样式 - 横向布局 */
-.card-content.medium {
+/* 中尺寸样式 */
+:deep(.card-content.medium) {
   display: flex;
-  flex-direction: row;  /* 改为横向布局 */
-  align-items: center;  /* 垂直居中对齐 */
-  justify-content: space-between; /* 两侧对齐 */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  padding: 10px; /* 减小内边距 (16px → 10px) */
   height: 100%;
 }
 
-.card-content.medium .time-section {
+.time-section {
   flex: 1;
-  text-align: left; /* 左对齐 */
+  text-align: left;
 }
 
-.card-content.medium .time {
-  font-size: 32px; /* 减小字体大小 (48px → 32px) */
+:deep(.card-content.medium) .time {
+  font-size: 32px;
 }
 
-.card-content.medium .seconds {
-  font-size: 18px; /* 减小字体大小 (24px → 18px) */
+.seconds {
+  font-size: 18px;
+  opacity: 0.6;
+  font-weight: 200;
+  vertical-align: middle;
+  margin-left: 2px;
 }
 
-.card-content.medium .date-section {
+.date-section {
   flex: 1;
-  text-align: right; /* 右对齐 */
+  text-align: right;
   padding-left: 20px;
   border-left: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+.date-line {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.date {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.day {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.lunar-date {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 400;
+  background: linear-gradient(90deg, 
+    rgba(191, 90, 242, 0.8),
+    rgba(94, 92, 230, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* 大尺寸样式 */
-.card-content.large {
+:deep(.card-content.large) {
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
   width: 100%;
-  padding: 14px; /* 减小内边距 (20px → 14px) */
 }
 
 .time-section.large {
@@ -202,12 +211,12 @@ export default {
 }
 
 .large-time {
-  font-size: 48px !important; /* 调整字体大小 (80px → 48px) */
-  margin-bottom: 12px; /* 减小间距 (20px → 12px) */
+  font-size: 48px !important;
+  margin-bottom: 12px;
 }
 
 .large-time .seconds {
-  font-size: 24px; /* 减小字体大小 (36px → 24px) */
+  font-size: 24px;
 }
 
 .date-section.large {
@@ -229,17 +238,17 @@ export default {
 }
 
 .large-date {
-  font-size: 16px; /* 减小字体大小 (22px → 16px) */
+  font-size: 16px;
   margin-bottom: 6px;
 }
 
 .large-day {
-  font-size: 14px; /* 减小字体大小 (18px → 14px) */
+  font-size: 14px;
   margin-bottom: 6px;
 }
 
 .large-lunar {
-  font-size: 14px; /* 减小字体大小 (18px → 14px) */
+  font-size: 14px;
   margin-top: 4px;
   background: linear-gradient(90deg, 
     rgba(191, 90, 242, 0.9),
