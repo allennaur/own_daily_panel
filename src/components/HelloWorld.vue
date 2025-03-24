@@ -366,7 +366,7 @@ export default {
       }
     },
 
-    // 完全重写Bento布局算法
+    // 改进 Bento 布局算法，增加垂直居中和动效
     optimizeBentoLayout() {
       const container = this.$refs.bentoContainer;
       if (!container) return;
@@ -375,15 +375,16 @@ export default {
       const cards = Array.from(container.children);
       if (!cards.length) return;
       
-      // 获取容器宽度并计算布局参数
+      // 获取容器宽度和高度
       const containerWidth = container.clientWidth;
+      const containerHeight = container.parentElement.clientHeight - 32; // 减去内边距
       
       // 根据容器宽度决定列数和单元格大小
       const gridGap = 16; // 卡片间距
       const columns = containerWidth >= 1200 ? 8 : (containerWidth >= 768 ? 6 : 4);
       const cellSize = Math.floor((containerWidth - (columns - 1) * gridGap) / columns);
       
-      // 初始化布局网格 (移除未使用的grid变量)
+      // 初始化布局网格
       const heights = Array(columns).fill(0);
       
       // 卡片尺寸映射
@@ -402,7 +403,7 @@ export default {
         return bSize - aSize;
       });
       
-      // 为每个卡片找到合适位置
+      // 第一轮：计算布局所需的总高度（不应用样式）
       sortedCards.forEach(card => {
         // 获取卡片尺寸
         let cardSize = 'small';
@@ -411,7 +412,37 @@ export default {
         
         const { width, height } = sizeMap[cardSize];
         
-        // 找到最佳位置（尽量居中）
+        // 找到最佳位置
+        const position = this.findBestPosition(heights, width, columns);
+        
+        // 更新网格高度
+        for (let i = 0; i < width; i++) {
+          heights[position + i] += height;
+        }
+      });
+      
+      // 计算布局总高度
+      const totalLayoutHeight = Math.max(...heights) * (cellSize + gridGap) - gridGap;
+      
+      // 计算垂直方向的偏移量，实现垂直居中
+      let verticalOffset = 0;
+      if (totalLayoutHeight < containerHeight) {
+        verticalOffset = Math.floor((containerHeight - totalLayoutHeight) / 2);
+      }
+      
+      // 重置高度数组用于第二轮布局
+      heights.fill(0);
+      
+      // 第二轮：应用布局样式
+      sortedCards.forEach((card, index) => {
+        // 获取卡片尺寸
+        let cardSize = 'small';
+        if (card.classList.contains('card-medium')) cardSize = 'medium';
+        if (card.classList.contains('card-large')) cardSize = 'large';
+        
+        const { width, height } = sizeMap[cardSize];
+        
+        // 找到最佳位置
         const position = this.findBestPosition(heights, width, columns);
         
         // 更新网格高度
@@ -425,15 +456,25 @@ export default {
         const cardWidth = width * cellSize + (width - 1) * gridGap;
         const cardHeight = height * cellSize + (height - 1) * gridGap;
         
+        // 设置卡片的过渡延迟，创建级联效果
+        const transitionDelay = `${index * 0.05}s`;
+        
+        // 应用定位样式
         card.style.position = 'absolute';
         card.style.left = `${cardLeft}px`;
-        card.style.top = `${cardTop * (cellSize + gridGap)}px`;
+        card.style.top = `${cardTop * (cellSize + gridGap) + verticalOffset}px`;
         card.style.width = `${cardWidth}px`;
         card.style.height = `${cardHeight}px`;
+        card.style.transitionDelay = transitionDelay;
+        
+        // 添加动画类，使卡片可见
+        setTimeout(() => {
+          card.classList.add('card-visible');
+        }, 50);
       });
       
-      // 设置容器高度
-      const maxHeight = Math.max(...heights) * (cellSize + gridGap);
+      // 设置容器高度，考虑垂直居中
+      const maxHeight = Math.max(Math.max(...heights) * (cellSize + gridGap), containerHeight);
       container.style.height = `${maxHeight}px`;
     },
     
@@ -595,6 +636,9 @@ export default {
   padding: 24px;
   overflow: auto;
   scroll-behavior: smooth; /* 平滑滚动效果 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 垂直居中 */
 }
 
 .panel-content:after {
@@ -622,7 +666,7 @@ export default {
   min-height: 400px;
   margin: 0 auto;
   padding: 8px;
-  transition: height 0.3s ease;
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 基础卡片样式 - 适配Bento UI */
@@ -636,16 +680,25 @@ export default {
     0 1px 3px rgba(0, 0, 0, 0.02);
   overflow: hidden;
   transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-              transform 0.3s ease-out,
-              left 0.4s ease-out,
-              top 0.4s ease-out,
-              width 0.4s ease-out,
-              height 0.4s ease-out;
+              transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
   transform-style: preserve-3d;
-  will-change: transform, left, top, width, height;
+  will-change: transform, left, top, width, height, opacity;
   position: absolute;
   margin: 0;
   z-index: 1;
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+/* 卡片可见状态的动画 */
+.card.card-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .card:hover {
