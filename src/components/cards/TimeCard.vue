@@ -3,6 +3,7 @@
     :size="size" 
     type="readonly" 
     :showHeader="false"
+    class="card-time"
     ref="timeCard"
     @context-menu="$emit('context-menu', $event)">
     <template v-slot:default>
@@ -79,10 +80,9 @@ export default {
 /* 时间卡片使用深紫色主题 */
 :deep(.card) {
   background: linear-gradient(135deg, 
-    rgba(111, 66, 193, 1), 
-    rgba(70, 26, 160, 0.95)
+    rgba(111, 66, 193, 0.95), 
+    rgba(70, 26, 160, 0.9)
   ) !important;
-  color: #333333 !important;
   position: relative;
   overflow: hidden;
 }
@@ -104,13 +104,13 @@ export default {
 /* 确保内容层叠顺序正确 */
 :deep(.card-content) {
   position: relative;
-  z-index: 5 !important;
+  z-index: 5 !important; /* 修复语法错误 */
 }
 
 /* 明确强制所有文本为深色 */
 .time, .small-date, .date, .day {
-  color: #333333 !important; 
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
+  color: white !important; 
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* 确保时间样式正确 */
@@ -119,8 +119,8 @@ export default {
   font-weight: 600;
   line-height: 1;
   margin-bottom: 8px;
-  color: #333333 !important;
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.3);
+  color: white !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 10;
 }
@@ -156,9 +156,9 @@ export default {
   z-index: 5 !important;
 }
 
-/* 所有文本元素强制使用深色 */
-:deep(.card) * {
-  color: #333333 !重要;
+/* 所有文本元素强制使用白色 */
+:deep(.card) *:not(textarea) {
+  color: white !important;
 }
 
 /* 修复装饰层覆盖文本问题 */
@@ -202,7 +202,7 @@ export default {
   font-weight: 600; /* 加粗时间显示 */
   line-height: 1;
   margin-bottom: 8px;
-  color: #333333 !important;
+  color: white !important;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 增强阴影提高可读性 */
   position: relative;
   z-index: 10;
@@ -222,7 +222,7 @@ export default {
 .small-date {
   font-size: 12px;
   opacity: 1; /* 提高不透明度 */
-  color: #333333;
+  color: white;
   font-weight: 500; /* 适度加粗 */
 }
 
@@ -283,13 +283,13 @@ export default {
 .date {
   font-size: 14px;
   font-weight: 500; /* 适度加粗 */
-  color: #333333;
+  color: white;
 }
 
 .day {
   font-size: 13px;
   opacity: 1; /* 提高不透明度 */
-  color: #333333;
+  color: white;
   font-weight: 500; /* 适度加粗 */
   padding: 2px 8px;
   background: rgba(255, 255, 255, 0.25); /* 增加背景对比度 */
@@ -303,7 +303,7 @@ export default {
   margin-top: 6px;
   background: linear-gradient(90deg, #ffe259, #ffa751);
   -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !重要;
+  -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
   display: inline-block;
   padding: 3px 8px;
@@ -384,14 +384,14 @@ export default {
 .large-date {
   font-size: 18px;
   margin-bottom: 4px;
-  color: rgba(255, 255, 255, 1); /* 完全不透明 */
+  color: white; /* 完全不透明 */
   font-weight: 600; /* 加粗显示 */
 }
 
 .large-day {
   font-size: 16px;
   margin-bottom: 12px;
-  color: #333333;
+  color: white;
   font-weight: 600; /* 加粗显示 */
   padding: 4px 14px;
   background: rgba(255, 255, 255, 0.25); /* 增加背景对比度 */
@@ -433,6 +433,140 @@ export default {
   height: 80px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0.7;
+  z-index: 1;
+}
+
+/* 时间卡片使用紫色系渐变文本，无背景 */
+.time, .date, .day, .small-date {
+  color: #6a11cb;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  position: relative;
+}
+
+/* 确保时间最突出 */
+.time {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 10;
+}
+
+/* 小日期样式 */
+.small-date {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  background: linear-gradient(135deg, #6f42c1, #b854d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 中等尺寸样式更新 */
+:deep(.card-content.medium) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.time-section {
+  flex: 1;
+  text-align: left;
+  background: rgba(106, 17, 203, 0.05);
+  padding: 10px 16px;
+  border-radius: 12px;
+}
+
+:deep(.card-content.medium) .time {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.seconds {
+  font-size: 20px;
+  opacity: 0.85;
+  font-weight: 400;
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: pulse 1s infinite;
+}
+
+/* 日期和星期 */
+.date {
+  font-size: 14px;
+  font-weight: 500;
+  background: linear-gradient(90deg, #6a11cb, #8a3ab9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.day {
+  font-size: 13px;
+  opacity: 1;
+  font-weight: 500;
+  padding: 3px 10px;
+  background: rgba(106, 17, 203, 0.07);
+  border-radius: 10px;
+  color: #6a11cb;
+}
+
+/* 农历日期 */
+.lunar-date {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
+  background: linear-gradient(90deg, #ff9f0a, #ff7a00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  padding: 3px 8px;
+  position: relative;
+  z-index: 5;
+  border-radius: 8px;
+  background-color: rgba(255, 159, 10, 0.07);
+}
+
+/* 大尺寸时间显示 */
+.large-time {
+  font-size: 60px;
+  margin-bottom: 8px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -2px;
+  position: relative;
+  z-index: 10;
+}
+
+/* 装饰元素 */
+.time-decoration {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(106, 17, 203, 0.1) 0%, rgba(106, 17, 203, 0) 70%);
   opacity: 0.7;
   z-index: 1;
 }

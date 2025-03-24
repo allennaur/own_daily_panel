@@ -3,6 +3,7 @@
     :size="size" 
     type="editable" 
     title="今日待办"
+    class="card-todo"
     @context-menu="$emit('context-menu', $event)">
     
     <template v-slot:header-actions>
@@ -113,15 +114,19 @@ export default {
 </script>
 
 <style scoped>
-/* 提高选择器权重并设置文字颜色 */
+/* 待办事项卡片使用绿色主题 */
 :deep(.card) {
   background: linear-gradient(135deg,
     rgba(46, 176, 134, 1),
     rgba(26, 115, 96, 0.95)
   ) !important;
-  color: #ffffff !important;
   position: relative;
   overflow: hidden;
+}
+
+/* 添加紧急覆盖，确保所有文本元素使用白色 */
+:deep(.card) *:not(textarea) {
+  color: white !important;
 }
 
 /* 确保装饰层不会遮挡内容 */
@@ -140,11 +145,11 @@ export default {
 
 /* 强制控制标题文字颜色 */
 :deep(.card-header) h3 {
-  color: #333333 !important;
+  color: white !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em;
   z-index: 5;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* 确保卡片内容处于顶层 */
@@ -158,8 +163,7 @@ export default {
   height: 24px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.1);
-  color: #333333 !important;
+  background: rgba(255, 255, 255, 0.3); /* 增加背景对比度 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -204,7 +208,7 @@ export default {
 .todo-item.completed label {
   text-decoration: line-through;
   opacity: 0.6;
-  color: rgba(51, 51, 51, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .todo-item input[type="checkbox"] {
@@ -243,12 +247,11 @@ export default {
 .todo-item label {
   flex: 1;
   font-size: 14px;
-  color: #333333 !important; /* 使用深色文本 */
   font-weight: 400;
   cursor: pointer;
   transition: opacity 0.2s;
   letter-spacing: -0.01em;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .delete-btn {
@@ -276,7 +279,6 @@ export default {
 .empty-state {
   text-align: center;
   padding: 30px 20px;
-  color: #333333 !important;
   font-size: 14px;
   font-style: italic;
   font-weight: 500;
@@ -296,12 +298,11 @@ export default {
 .add-todo-form input {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 10px;
   font-size: 14px;
   margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.5);
-  color: #333333 !important;
+  background: rgba(255, 255, 255, 0.25);
   transition: all 0.2s;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
@@ -314,7 +315,7 @@ export default {
 }
 
 .add-todo-form input::placeholder {
-  color: rgba(51, 51, 51, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .form-buttons {
@@ -331,8 +332,8 @@ export default {
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500; /* 适度加粗按钮文字 */
-  color: #333333 !important;
-  background: rgba(255, 255, 255, 0.25);
+  color: white !important;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .form-buttons button.save-btn {
@@ -360,12 +361,11 @@ export default {
   text-align: center;
   padding: 8px;
   font-size: 12px;
-  color: #333333 !important;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   margin: 10px;
   border-radius: 8px;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* 特定尺寸下的样式调整 */
@@ -391,5 +391,112 @@ export default {
   height: 28px;
   font-size: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 待办事项卡片使用绿色系渐变文本 */
+:deep(.card-header) h3 {
+  background: linear-gradient(135deg, #2eb086, #60dd8e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* 添加按钮 */
+.add-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(46, 176, 134, 0.15);
+  color: #2eb086;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-btn:hover {
+  background: rgba(46, 176, 134, 0.25);
+  transform: scale(1.05);
+}
+
+/* 待办项目 */
+.todo-item {
+  border-bottom: 1px solid rgba(46, 176, 134, 0.1);
+}
+
+.todo-item:hover {
+  background-color: rgba(46, 176, 134, 0.05);
+}
+
+.todo-item.completed {
+  background-color: rgba(46, 176, 134, 0.03);
+}
+
+.todo-item label {
+  color: #2a7561;
+}
+
+.todo-item.completed label {
+  text-decoration: line-through;
+  opacity: 0.6;
+  color: rgba(46, 176, 134, 0.7);
+}
+
+/* 复选框 */
+.todo-item input[type="checkbox"] {
+  border: 2px solid rgba(46, 176, 134, 0.4);
+}
+
+.todo-item input[type="checkbox"]:checked {
+  background-color: rgba(46, 176, 134, 0.9);
+  border-color: transparent;
+}
+
+/* 删除按钮 */
+.delete-btn {
+  color: rgba(46, 176, 134, 0.6);
+}
+
+.delete-btn:hover {
+  color: rgba(46, 176, 134, 1);
+}
+
+/* 空状态提示 */
+.empty-state {
+  color: rgba(46, 176, 134, 0.6);
+  background: rgba(46, 176, 134, 0.05);
+}
+
+/* 更多待办提示 */
+.more-todos {
+  color: #2eb086;
+  background: rgba(46, 176, 134, 0.07);
+}
+
+/* 添加表单 */
+.add-todo-form input {
+  border: 1px solid rgba(46, 176, 134, 0.2);
+  background: rgba(46, 176, 134, 0.03);
+  color: #2a7561;
+}
+
+.add-todo-form input::placeholder {
+  color: rgba(46, 176, 134, 0.5);
+}
+
+/* 表单按钮 */
+.form-buttons button {
+  color: #2a7561;
+  background: rgba(46, 176, 134, 0.1);
+}
+
+.form-buttons button.save-btn {
+  background: rgba(46, 176, 134, 0.2);
+  color: #2a7561;
 }
 </style>

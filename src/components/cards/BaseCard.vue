@@ -126,20 +126,29 @@ export default {
 </script>
 
 <style scoped>
-/* 基础卡片样式 */
+/* 基础卡片样式 - 透明背景，美观边框 */
 .card {
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.9); /* 提高不透明度 */
-  backdrop-filter: blur(30px);
-  border: 1px solid var(--visionos-border);
+  background: rgba(255, 255, 255, 0.6); /* 轻微的白色背景，提供对比度 */
+  backdrop-filter: blur(15px); /* 毛玻璃效果 */
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 
-    0 4px 30px rgba(0, 0, 0, 0.05),
-    0 1px 3px rgba(0, 0, 0, 0.03);
+    0 4px 24px rgba(0, 0, 0, 0.03),
+    0 1px 6px rgba(0, 0, 0, 0.02);
   overflow: hidden;
   height: 100%;
   transform-style: preserve-3d;
   will-change: transform;
   position: relative;
+  transition: all 0.3s ease;
+}
+
+/* 卡片悬停效果 */
+.card:hover {
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.05),
+    0 2px 8px rgba(0, 0, 0, 0.03);
+  transform: translateY(-2px);
 }
 
 /* 卡片悬停光效 */
@@ -158,12 +167,6 @@ export default {
   transition: opacity 0.3s ease;
 }
 
-.card:hover {
-  box-shadow: 
-    0 8px 40px rgba(0, 0, 0, 0.05),
-    0 2px 5px rgba(0, 0, 0, 0.03);
-}
-
 .card:hover::before {
   opacity: 1;
 }
@@ -177,15 +180,15 @@ export default {
   cursor: context-menu; /* 只在标题栏显示上下文菜单提示 */
 }
 
-/* 卡片标题栏 - 设置默认文本颜色为深色 */
+/* 卡片标题栏 - 精致设计 */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
   position: relative;
-  z-index: 10; /* 确保标题在最顶层 */
+  z-index: 10;
 }
 
 .card-header h3 {
@@ -193,16 +196,15 @@ export default {
   font-weight: 600;
   margin: 0;
   letter-spacing: -0.01em;
-  color: #333333; /* 默认深色文本 */
+  color: rgba(0, 0, 0, 0.75);
 }
 
-/* 卡片内容区域 - 设置默认文本颜色为深色 */
+/* 卡片内容区域 */
 .card-content {
   padding: 14px;
   height: calc(100% - 45px);
   position: relative;
   z-index: 5;
-  color: #333333; /* 默认深色文本 */
 }
 
 /* 无标题栏卡片的内容区域 */

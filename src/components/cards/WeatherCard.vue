@@ -3,6 +3,7 @@
     :size="size" 
     type="readonly" 
     :showHeader="size !== 'small'"
+    class="card-weather"
     :title="size === 'medium' ? '天气' : '天气预报'"
     @context-menu="$emit('context-menu', $event)">
     
@@ -121,7 +122,6 @@ export default {
     rgba(25, 118, 210, 1),
     rgba(13, 71, 161, 0.95)
   ) !important;
-  color: #ffffff !important;
   position: relative;
   overflow: hidden;
 }
@@ -140,13 +140,13 @@ export default {
   z-index: 0;
 }
 
-/* 强制所有天气卡片文本为深色 */
+/* 强制所有天气卡片文本为白色 */
 :deep(.card),
 :deep(.card) * {
-  color: #333333 !important;
+  color: white !important;
 }
 
-/* 强制设置所有文本为深色 */
+/* 强制设置所有文本为白色 */
 :deep(.card-header) h3,
 .temperature,
 .weather-desc,
@@ -155,37 +155,27 @@ export default {
 .detail-value,
 .forecast-day,
 .forecast-temp {
-  color: #333333 !important;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* 强调温度显示 */
 .temperature {
   font-size: 34px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
   margin-bottom: 6px;
-  color: #333333 !important;
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.3);
-}
-
-/* 天气描述使用半透明背景增强可读性 */
-.weather-desc {
-  font-size: 14px;
-  color: #ffffff !important;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.25);
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 10px;
-  text-shadow: none;
+  background: linear-gradient(135deg, #1976d2, #64b5f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* 大尺寸温度渐变效果 */
 .temperature.large {
   font-size: 48px;
-  font-weight: 700;
-  background: linear-gradient(180deg, #333333, rgba(51, 51, 51, 0.9));
+  font-weight: 800;
+  background: linear-gradient(135deg, #0d47a1, #42a5f5);
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
@@ -226,10 +216,10 @@ export default {
 
 .location.small {
   font-size: 10px;
-  color: rgba(255, 255, 255, 1); /* 完全不透明 */
+  color: #1976d2; /* 完全不透明 */
   font-weight: 500; /* 适度加粗 */
-  background: rgba(255, 255, 255, 0.25); /* 增加背景对比度 */
-  padding: 2px 8px;
+  background: rgba(25, 118, 210, 0.07); /* 增加背景对比度 */
+  padding: 3px 8px;
   border-radius: 10px;
 }
 
@@ -257,11 +247,11 @@ export default {
 
 .weather-desc {
   font-size: 14px;
-  color: rgba(255, 255, 255, 1);
   font-weight: 500; /* 适度加粗 */
-  background: rgba(255, 255, 255, 0.25); /* 增加背景对比度 */
+  color: #1976d2;
+  background: rgba(25, 118, 210, 0.07); /* 增加背景对比度 */
   display: inline-block;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 10px;
 }
 
@@ -326,7 +316,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(25, 118, 210, 0.05);
   border-radius: 12px;
   margin: 0 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -355,7 +345,7 @@ export default {
 .forecast-section h4 {
   font-size: 16px;
   margin-bottom: 10px;
-  color: white;
+  color: #1976d2;
   font-weight: 600; /* 加粗标题 */
   position: relative;
   display: inline-block;
@@ -380,7 +370,7 @@ export default {
 .forecast-item {
   flex: 1;
   text-align: center;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(25, 118, 210, 0.05);
   border-radius: 12px;
   padding: 12px 8px;
   margin: 0 5px;
@@ -395,7 +385,7 @@ export default {
 
 .forecast-day {
   font-size: 12px;
-  color: rgba(255, 255, 255, 1);
+  color: #1976d2 !important;
   font-weight: 500; /* 适度加粗 */
   margin-bottom: 5px;
 }
@@ -410,7 +400,7 @@ export default {
 .forecast-temp {
   font-size: 13px;
   font-weight: 600; /* 加粗温度 */
-  color: white;
+  color: #1976d2 !important;
 }
 
 /* 通用图标样式 */
@@ -426,35 +416,59 @@ export default {
 
 .weather-icon.sunny {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FFFFFF"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>');
+  filter: drop-shadow(0 2px 5px rgba(255, 183, 77, 0.2));
+  color: #ff9800;
 }
 
 .weather-icon.cloudy {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FFFFFF"><path d="M19 18H6a4 4 0 1 1 0-8h.71A5.5 5.5 0 0 1 18 7.5v.5a4 4 0 0 1 1 7.89z"/></svg>');
+  filter: drop-shadow(0 2px 5px rgba(100, 181, 246, 0.2));
+  color: #64b5f6;
 }
 
 /* 顶部位置显示 */
 .location {
   font-size: 12px;
-  color: rgba(255, 255, 255, 1);
+  color: #1976d2;
   font-weight: 500; /* 适度加粗 */
 }
 
 .detail-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.9); /* 增加不透明度 */
+  color: rgba(25, 118, 210, 0.7); /* 增加不透明度 */
   font-weight: 400; /* 保持常规字重 */
 }
 
 .detail-value {
   font-size: 14px;
   font-weight: 600; /* 加粗数值 */
-  color: white;
+  color: #1976d2;
 }
 
 :deep(.card-header h3) {
-  color: #333333 !重要;
-  font-weight: 600 !重要;
+  background: linear-gradient(135deg, #1976d2, #64b5f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600 !important;
   letter-spacing: -0.01em;
   z-index: 5;
+}
+
+/* 确保所有文本元素使用白色 */
+:deep(.card) * {
+  color: white !important;
+}
+
+:deep(.card-header h3) {
+  color: white !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  z-index: 5;
+}
+
+/* 添加紧急覆盖，确保所有天气卡片中的文本使用白色 */
+:deep(.card) *:not(textarea) {
+  color: white !important;
 }
 </style>

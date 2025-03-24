@@ -1,0 +1,111 @@
+/* 全局强制颜色规则 */
+
+/* 强制卡片文本颜色 */
+.card-time .time,
+.card-time .date,
+.card-time .day,
+.card-time .small-date,
+.card-time .seconds,
+.card-time * {
+  color: white !important;
+}
+
+.card-weather .temperature,
+.card-weather .weather-desc,
+.card-weather .location,
+.card-weather .detail-label,
+.card-weather .detail-value,
+.card-weather .forecast-day,
+.card-weather .forecast-temp,
+.card-weather .card-header h3,
+.card-weather * {
+  color: white !important;
+}
+
+.card-todo .card-header h3,
+.card-todo .todo-item label,
+.card-todo .empty-state,
+.card-todo .more-todos,
+.card-todo .form-buttons button,
+.card-todo * {
+  color: white !important;
+}
+
+/* 笔记卡片例外 */
+.card-note .card-header h3 {
+  color: #333333 !important;
+}
+
+.card-note textarea {
+  color: rgba(0, 0, 0, 0.85) !important; 
+  background: transparent !important;
+}
+
+/* 全局卡片主题定义 */
+
+/* 基础卡片样式 */
+.card {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* 时间卡片 - 紫色渐变主题 */
+.card-time .time {
+  background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.card-time .date,
+.card-time .day,
+.card-time .small-date {
+  color: #6a11cb !important;
+}
+
+/* 天气卡片 - 蓝色渐变主题 */
+.card-weather .temperature {
+  background: linear-gradient(135deg, #1976d2, #64b5f6) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.card-weather .weather-desc,
+.card-weather .location,
+.card-weather .detail-value,
+.card-weather .forecast-temp,
+.card-weather .card-header h3 {
+  color: #1976d2 !important;
+}
+
+/* 待办事项卡片 - 绿色渐变主题 */
+.card-todo .card-header h3 {
+  background: linear-gradient(135deg, #2eb086, #60dd8e) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.card-todo .todo-item label,
+.card-todo .empty-state,
+.card-todo .more-todos {
+  color: #2a7561 !important;
+}
+
+/* 笔记卡片 - 橙色渐变主题 */
+.card-note .card-header h3 {
+  background: linear-gradient(135deg, #ff9f0a, #ff7a00) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.card-note textarea {
+  color: #cc6600 !important; 
+  background: transparent !important;
+}
