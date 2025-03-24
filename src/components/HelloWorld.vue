@@ -151,6 +151,12 @@ export default {
     
     // 添加全局点击事件隐藏菜单
     document.addEventListener('click', this.hideMenuOnOutsideClick);
+
+    // 监听滚动事件以控制阴影效果
+    const panelContent = document.querySelector('.panel-content');
+    if (panelContent) {
+      panelContent.addEventListener('scroll', this.handleScroll);
+    }
   },
   beforeUnmount() {
     // 移除全屏监听
@@ -161,6 +167,12 @@ export default {
     
     // 移除全局点击事件
     document.removeEventListener('click', this.hideMenuOnOutsideClick);
+
+    // 移除滚动监听
+    const panelContent = document.querySelector('.panel-content');
+    if (panelContent) {
+      panelContent.removeEventListener('scroll', this.handleScroll);
+    }
   },
   methods: {
     toggleFullscreen() {
@@ -332,6 +344,15 @@ export default {
           console.error('加载卡片尺寸失败:', e);
         }
       }
+    },
+
+    handleScroll(e) {
+      const target = e.target;
+      if (target.scrollTop > 10) {
+        target.classList.add('scrolled');
+      } else {
+        target.classList.remove('scrolled');
+      }
     }
   }
 }
@@ -397,7 +418,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.7); /* 半透明背景 */
+  backdrop-filter: blur(10px); /* 毛玻璃效果 */
+  -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+  position: sticky; /* 使标题栏固定在顶部 */
+  top: 0;
+  z-index: 10; /* 确保标题栏位于其他内容之上 */
 }
 
 .logo-title-container {
@@ -454,6 +481,24 @@ export default {
   flex: 1;
   padding: 24px;
   overflow: auto;
+  scroll-behavior: smooth; /* 平滑滚动效果 */
+}
+
+.panel-content:after {
+  content: '';
+  position: absolute;
+  top: 60px; /* 标题栏高度 */
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.panel-content:not(:scrolled-to-top):after {
+  opacity: 1;
 }
 
 /* 卡片容器 - 优化网格布局支持标准尺寸，减小尺寸 */
