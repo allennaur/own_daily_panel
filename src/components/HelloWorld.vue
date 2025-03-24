@@ -542,7 +542,7 @@ export default {
   overflow: hidden;
 }
 
-/* 顶部导航栏 */
+/* 顶部导航栏 - 移除背景和阴影，使其更加融入页面 */
 .top-nav {
   width: 100%;
   height: 60px;
@@ -550,14 +550,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: transparent; /* 移除背景 */
   position: absolute;
   top: 0;
   left: 0;
   z-index: 100;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  box-shadow: none; /* 移除阴影 */
 }
 
 .logo-title-container {
@@ -584,13 +582,14 @@ export default {
   margin: 0;
   letter-spacing: -0.02em;
   color: var(--visionos-text);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2); /* 添加轻微文本阴影增强可读性 */
 }
 
 .fullscreen-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3); /* 轻微透明背景 */
   border: 1px solid var(--visionos-border);
   display: flex;
   align-items: center;
@@ -598,11 +597,11 @@ export default {
   cursor: pointer;
   color: var(--visionos-text);
   transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px); /* 保留模糊效果 */
 }
 
 .fullscreen-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.5);
   transform: scale(1.05);
 }
 
@@ -620,6 +619,7 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: auto;
+  padding-top: 10px; /* 增加一点顶部内边距 */
 }
 
 /* Bento卡片容器 */
@@ -717,13 +717,14 @@ export default {
 
 /* 全屏模式调整 */
 .hello.fullscreen .top-nav {
-  background: rgba(255, 255, 255, 0.8);
+  background: transparent; /* 确保全屏模式下也是透明的 */
+  padding-top: 10px; /* 全屏模式下增加顶部内边距 */
 }
 
 /* 响应式适配 */
 @media (max-width: 768px) {
   .top-nav {
-    padding: 0 15px;
+    padding: 10px 15px; /* 增加顶部内边距 */
     height: 50px;
   }
   
