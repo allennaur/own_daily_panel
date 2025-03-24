@@ -119,7 +119,7 @@ export default {
   100% { opacity: 0.3; transform: scale(1.2); }
 }
 
-/* 小尺寸样式 */
+/* 小尺寸样式 - 紧凑型正方形 */
 .card-content.small {
   display: flex;
   flex-direction: column;
@@ -133,7 +133,7 @@ export default {
   font-size: 32px;
   font-weight: 300;
   line-height: 1;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .card-content.small .small-date {
@@ -141,64 +141,27 @@ export default {
   opacity: 0.7;
 }
 
-/* 中尺寸样式 */
+/* 中尺寸样式 - 横向布局 */
 .card-content.medium {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;  /* 改为横向布局 */
+  align-items: center;  /* 垂直居中对齐 */
+  justify-content: space-between; /* 两侧对齐 */
   width: 100%;
-  padding: 10px;
+  padding: 16px;
+  height: 100%;
 }
 
-.card-content.medium .time {
-  font-size: 48px;
-  font-weight: 300;
-  line-height: 1;
-  margin-bottom: 12px;
-  letter-spacing: -0.02em;
-}
-
-.card-content.medium .seconds {
-  font-size: 24px;
-  opacity: 0.6;
-  font-weight: 200;
-  vertical-align: middle;
-  margin-left: 2px;
+.card-content.medium .time-section {
+  flex: 1;
+  text-align: left; /* 左对齐 */
 }
 
 .card-content.medium .date-section {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.card-content.medium .date-line {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-
-.card-content.medium .date {
-  font-size: 16px;
-  font-weight: 400;
-}
-
-.card-content.medium .day {
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.card-content.medium .lunar-date {
-  font-size: 14px;
-  opacity: 0.8;
-  font-weight: 400;
-  background: linear-gradient(90deg, 
-    rgba(191, 90, 242, 0.8),
-    rgba(94, 92, 230, 0.8));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  flex: 1;
+  text-align: right; /* 右对齐 */
+  padding-left: 20px;
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* 大尺寸样式 */

@@ -1,18 +1,25 @@
 <template>
-  <div class="card todo-card" ref="todoCard">
+  <div :class="['card', 'todo-card', cardSizeClass]" ref="todoCard">
     <div class="card-header">
       <h3>今日待办</h3>
       <button class="add-btn" @click="addNewTodo">+</button>
     </div>
-    <div class="card-content todo-content">
-      <div v-if="todos.length === 0" class="empty-state">暂无待办事项</div>
+    <div class="card-content todo-content" :class="size">
+      <!-- 不同尺寸下显示不同数量的待办项 -->
+      <div v-if="visibleTodos.length === 0" class="empty-state">暂无待办事项</div>
       <ul class="todo-list" v-else>
-        <li v-for="(todo, index) in todos" :key="index" class="todo-item" :class="{ 'completed': todo.completed }">
+        <li v-for="(todo, index) in visibleTodos" :key="index" class="todo-item" :class="{ 'completed': todo.completed }">
           <input type="checkbox" :id="'todo-' + index" v-model="todo.completed" @change="updateTodo">
           <label :for="'todo-' + index">{{ todo.text }}</label>
-          <button class="delete-btn" @click="deleteTodo(index)">×</button>
+          <button class="delete-btn" @click="deleteTodo(todos.indexOf(todo))">×</button>
         </li>
       </ul>
+      
+      <!-- 如果还有更多项目 -->
+      <div v-if="hasMoreTodos" class="more-todos">
+        还有 {{ todos.length - visibleTodos.length }} 项
+      </div>
+      
       <div v-if="isAddingTodo" class="add-todo-form">
         <input v-model="newTodoText" type="text" placeholder="输入新的待办事项" @keyup.enter="saveTodo">
         <div class="form-buttons">
@@ -25,8 +32,11 @@
 </template>
 
 <script>
+import { CardEffectMixin } from './CardBase.js';
+
 export default {
   name: 'TodoCard',
+  mixins: [CardEffectMixin],
   props: {
     initialTodos: {
       type: Array,
@@ -40,8 +50,20 @@ export default {
       newTodoText: ''
     };
   },
-  mounted() {
-    this.setupCardEffect(this.$refs.todoCard);
+  computed: {
+    visibleTodos() {
+      // 根据卡片尺寸显示不同数量的待办项
+      const maxItems = {
+        small: 2,
+        medium: 4,
+        large: 8
+      };
+      
+      return this.todos.slice(0, maxItems[this.size] || 3);
+    },
+    hasMoreTodos() {
+      return this.todos.length > this.visibleTodos.length;
+    }
   },
   methods: {
     setupCardEffect(card) {
@@ -290,5 +312,31 @@ export default {
 
 .form-buttons button.save-btn:hover {
   background: rgba(10, 132, 255, 0.9);
+}
+
+/* 添加尺寸特定的样式 */
+.todo-content.small {
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}
+
+.todo-content.medium {
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}
+
+.todo-content.large {
+  max-height: calc(100% - 60px);
+  overflow-y: auto;
+}
+
+.more-todos {
+  text-align: center;
+  padding: 10px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+  margin-top: 5px;
+  border-radius: 8px;
 }
 </style>

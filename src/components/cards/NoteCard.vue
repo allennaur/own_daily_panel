@@ -1,17 +1,20 @@
 <template>
-  <div class="card notes-card" ref="noteCard">
+  <div :class="['card', 'notes-card', cardSizeClass]" ref="noteCard">
     <div class="card-header">
       <h3>快速笔记</h3>
     </div>
-    <div class="card-content">
+    <div :class="['card-content', size]">
       <textarea v-model="noteText" placeholder="在这里记录一些想法..." @input="updateNote"></textarea>
     </div>
   </div>
 </template>
 
 <script>
+import { CardEffectMixin } from './CardBase.js';
+
 export default {
   name: 'NoteCard',
+  mixins: [CardEffectMixin],
   props: {
     initialNote: {
       type: String,
@@ -116,5 +119,19 @@ textarea::placeholder {
 
 textarea:focus {
   outline: none;
+}
+
+/* 添加尺寸特定的样式 */
+.card-content.small textarea {
+  height: 100px;
+}
+
+.card-content.medium textarea {
+  height: 100px;
+}
+
+.card-content.large textarea {
+  height: 300px;
+  font-size: 16px;
 }
 </style>

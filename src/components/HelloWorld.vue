@@ -456,10 +456,10 @@ export default {
   overflow: auto;
 }
 
-/* 卡片容器 */
+/* 卡片容器 - 优化网格布局支持标准尺寸 */
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* 基础宽度是4列 */
   grid-auto-rows: minmax(150px, auto);
   gap: 16px;
   width: 100%;
@@ -528,20 +528,23 @@ export default {
   padding: 20px;
 }
 
-/* 卡片尺寸类 */
+/* 卡片尺寸类 - 优化为标准比例 */
 .card.card-small {
-  grid-column: span 1;
-  grid-row: span 1;
+  grid-column: span 1; /* 1个单位宽 */
+  grid-row: span 1;    /* 1个单位高 */
+  aspect-ratio: 1/1;   /* 保持正方形 */
 }
 
 .card.card-medium {
-  grid-column: span 2;
-  grid-row: span 1;
+  grid-column: span 2; /* 2个单位宽 */
+  grid-row: span 1;    /* 1个单位高 */
+  aspect-ratio: 2/1;   /* 保持2:1的宽高比 */
 }
 
 .card.card-large {
-  grid-column: span 2;
-  grid-row: span 2;
+  grid-column: span 2; /* 2个单位宽 */
+  grid-row: span 2;    /* 2个单位高 */
+  aspect-ratio: 1/1;   /* 保持正方形 */
 }
 
 /* 卡片尺寸菜单 */
@@ -634,13 +637,13 @@ export default {
   }
   
   /* 在小屏幕上调整卡片尺寸 */
-  .card.card-medium, 
-  .card.card-large {
-    grid-column: span 2; /* 中型和大型卡片始终占满宽度 */
+  .card.card-medium {
+    grid-column: span 2; /* 中型卡片占满宽度 */
   }
   
   .card.card-large {
-    grid-row: span 2; /* 大型卡片保持两行高 */
+    grid-column: span 2; /* 大型卡片占满宽度 */
+    grid-row: span 2;    /* 保持高度 */
   }
   
   .panel-header {

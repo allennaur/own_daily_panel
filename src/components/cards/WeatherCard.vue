@@ -165,8 +165,24 @@ export default {
 /* 中尺寸样式 */
 .weather-content.medium {
   display: flex;
-  flex-wrap: wrap;
-  padding: 10px 0;
+  justify-content: space-between; /* 内容横向分布 */
+  align-items: center;
+  padding: 15px 10px;
+  height: 100%;
+}
+
+.weather-info {
+  flex: 1;
+}
+
+.weather-details.medium {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding-left: 20px;
+  height: 100%;
 }
 
 /* 大尺寸样式 */
