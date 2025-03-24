@@ -1,6 +1,6 @@
 <template>
   <div :class="['card', 'notes-card', cardSizeClass]" ref="noteCard">
-    <div class="card-header">
+    <div class="card-header" @contextmenu="handleHeaderContextMenu">
       <h3>快速笔记</h3>
     </div>
     <div :class="['card-content', size]">
@@ -36,6 +36,9 @@ export default {
       card.addEventListener('mouseenter', this.handleCardMouseEnter);
       card.addEventListener('mousemove', this.handleCardMouseMove);
       card.addEventListener('mouseleave', this.handleCardMouseLeave);
+      
+      // 移除整个卡片的右键菜单事件（让标题区域处理）
+      // card.addEventListener('contextmenu', this.handleContextMenu);
     },
     
     handleCardMouseEnter(e) {
@@ -63,6 +66,14 @@ export default {
     
     updateNote() {
       this.$emit('update:note', this.noteText);
+    },
+    
+    // 添加标题区域的右键菜单处理
+    handleHeaderContextMenu(e) {
+      // 阻止默认右键菜单
+      e.preventDefault();
+      // 触发父组件的右键菜单处理
+      this.$emit('context-menu', e);
     }
   },
   beforeUnmount() {
@@ -134,5 +145,10 @@ textarea:focus {
 .card-content.large textarea {
   height: 160px; /* 减小高度 (300px → 160px) */
   font-size: 14px; /* 减小字体大小 (16px → 14px) */
+}
+
+/* 使标题区域明确可操作 */
+.card-header {
+  cursor: context-menu; /* 提示用户可以右键点击 */
 }
 </style>

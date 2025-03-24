@@ -1,6 +1,6 @@
 <template>
   <div :class="['card', 'todo-card', cardSizeClass]" ref="todoCard">
-    <div class="card-header">
+    <div class="card-header" @contextmenu="handleHeaderContextMenu">
       <h3>今日待办</h3>
       <button class="add-btn" @click="addNewTodo">+</button>
     </div>
@@ -72,6 +72,9 @@ export default {
       card.addEventListener('mouseenter', this.handleCardMouseEnter);
       card.addEventListener('mousemove', this.handleCardMouseMove);
       card.addEventListener('mouseleave', this.handleCardMouseLeave);
+      
+      // 移除整个卡片的右键菜单事件（让标题区域处理）
+      // card.addEventListener('contextmenu', this.handleContextMenu);
     },
     
     handleCardMouseEnter(e) {
@@ -129,6 +132,14 @@ export default {
     
     updateTodo() {
       this.$emit('update:todos', [...this.todos]);
+    },
+    
+    // 添加标题区域的右键菜单处理
+    handleHeaderContextMenu(e) {
+      // 阻止默认右键菜单
+      e.preventDefault();
+      // 触发父组件的右键菜单处理
+      this.$emit('context-menu', e);
     }
   },
   beforeUnmount() {
@@ -337,5 +348,10 @@ export default {
   background: rgba(255, 255, 255, 0.2);
   margin-top: 5px;
   border-radius: 8px;
+}
+
+/* 使标题区域明确可操作 */
+.card-header {
+  cursor: context-menu; /* 提示用户可以右键点击 */
 }
 </style>
