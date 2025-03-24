@@ -17,7 +17,7 @@ export default {
 
 <style>
 :root {
-  --visionos-bg-color: #f5f5f7;
+  --visionos-bg-color: rgb(238, 238, 240);
 }
 
 * {

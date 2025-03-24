@@ -28,8 +28,7 @@ export default {
     }
   },
   mounted() {
-    // 添加视差效果和全屏监听
-    document.addEventListener('mousemove', this.handleMouseMove);
+    // 移除全局mousemove事件监听，改为在DOM更新后为卡片添加事件
     document.addEventListener('fullscreenchange', this.fullscreenChanged);
     document.addEventListener('webkitfullscreenchange', this.fullscreenChanged);
     document.addEventListener('mozfullscreenchange', this.fullscreenChanged);
@@ -41,36 +40,67 @@ export default {
     
     // 如果存在本地存储数据，加载它
     this.loadLocalData();
+    
+    // 在DOM更新后添加卡片的鼠标事件
+    this.$nextTick(() => {
+      this.setupCardEffects();
+    });
   },
   beforeUnmount() {
-    document.removeEventListener('mousemove', this.handleMouseMove);
+    // 移除全局mousemove事件监听
     document.removeEventListener('fullscreenchange', this.fullscreenChanged);
     document.removeEventListener('webkitfullscreenchange', this.fullscreenChanged);
     document.removeEventListener('mozfullscreenchange', this.fullscreenChanged);
     document.removeEventListener('MSFullscreenChange', this.fullscreenChanged);
+    
+    // 移除卡片事件监听
+    this.removeCardEffects();
   },
   methods: {
-    handleMouseMove(e) {
-      // 获取鼠标位置相对于窗口中心的偏移量
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const moveX = (e.clientX - centerX) / centerX * 1;  // 减小倾斜幅度
-      const moveY = (e.clientY - centerY) / centerY * 1;
-      
-      // 应用轻微的视差效果到面板
-      const panel = document.querySelector('.panel');
-      if (panel) {
-        panel.style.transform = `translateZ(0) perspective(2000px) rotateX(${-moveY}deg) rotateY(${moveX}deg)`;
-      }
-      
-      // 对卡片应用不同程度的视差效果
+    // 移除旧的handleMouseMove方法，新增卡片效果设置方法
+    setupCardEffects() {
       const cards = document.querySelectorAll('.card');
-      cards.forEach((card, index) => {
-        const factor = 1 + (index * 0.1);
-        card.style.transform = `translateY(-5px) scale(1.01) translateZ(${index * 5}px) rotateX(${-moveY * factor}deg) rotateY(${moveX * factor}deg)`;
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', this.handleCardMouseEnter);
+        card.addEventListener('mousemove', this.handleCardMouseMove);
+        card.addEventListener('mouseleave', this.handleCardMouseLeave);
       });
     },
     
+    removeCardEffects() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        card.removeEventListener('mouseenter', this.handleCardMouseEnter);
+        card.removeEventListener('mousemove', this.handleCardMouseMove);
+        card.removeEventListener('mouseleave', this.handleCardMouseLeave);
+      });
+    },
+    
+    handleCardMouseEnter(e) {
+      const card = e.currentTarget;
+      card.style.transition = 'transform 0.2s ease-out';
+    },
+    
+    handleCardMouseMove(e) {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const cardCenterX = rect.left + rect.width / 2;
+      const cardCenterY = rect.top + rect.height / 2;
+      
+      // 计算鼠标相对于卡片中心的位置比例
+      const cardMoveX = (e.clientX - cardCenterX) / (rect.width / 2) * 5; // 调整倾斜幅度
+      const cardMoveY = (e.clientY - cardCenterY) / (rect.height / 2) * 5;
+      
+      // 应用倾斜效果
+      card.style.transform = `perspective(1000px) rotateX(${-cardMoveY}deg) rotateY(${cardMoveX}deg)`;
+    },
+    
+    handleCardMouseLeave(e) {
+      const card = e.currentTarget;
+      card.style.transition = 'transform 0.5s ease-out';
+      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    },
+
     toggleFullscreen() {
       if (!this.isFullscreen) {
         const docElm = document.documentElement;
