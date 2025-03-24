@@ -1,9 +1,16 @@
 <template>
   <div class="card time-card" ref="timeCard">
     <div class="card-content">
-      <div class="time">{{ time }}</div>
-      <div class="date">{{ date }}</div>
-      <div class="day">{{ day }}</div>
+      <div class="time-section">
+        <div class="time">
+          {{ time.substring(0, 5) }}<span class="seconds">{{ time.substring(5) }}</span>
+        </div>
+      </div>
+      <div class="date-section">
+        <div class="date">{{ date }}</div>
+        <div class="day">{{ day }}</div>
+        <div class="lunar-date">{{ lunar }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -14,7 +21,8 @@ export default {
   props: {
     time: String,
     date: String,
-    day: String
+    day: String,
+    lunar: String // 添加农历日期属性
   },
   mounted() {
     this.setupCardEffect(this.$refs.timeCard);
@@ -96,28 +104,81 @@ export default {
   100% { opacity: 0.3; transform: scale(1.2); }
 }
 
+.card-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  z-index: 2;
+}
+
+.time-section {
+  margin-bottom: 10px;
+}
+
 .time {
-  font-size: 60px;
+  font-size: 64px;
   font-weight: 300;
   line-height: 1;
-  margin-bottom: 12px;
   color: var(--visionos-text) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   letter-spacing: -0.02em;
+  margin-bottom: 5px;
+}
+
+.seconds {
+  font-size: 32px;
+  opacity: 0.6;
+  font-weight: 200;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+.date-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 0;
+  position: relative;
+}
+
+.date-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .date {
   font-size: 18px;
   font-weight: 400;
-  margin-bottom: 4px;
   color: var(--visionos-text-secondary) !important;
   letter-spacing: -0.01em;
 }
 
 .day {
   font-size: 16px;
-  font-weight: 300;
-  opacity: 0.8;
+  font-weight: 400;
   color: var(--visionos-text-secondary) !important;
+}
+
+.lunar-date {
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 2px;
+  color: var(--visionos-text-secondary) !important;
+  opacity: 0.8;
+  letter-spacing: -0.01em;
+  background: linear-gradient(90deg, 
+    rgba(191, 90, 242, 0.8),
+    rgba(94, 92, 230, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 </style>

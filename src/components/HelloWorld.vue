@@ -25,6 +25,7 @@
             :time="currentTime" 
             :date="currentDate" 
             :day="currentDay"
+            :lunar="lunarDate"
           />
           
           <!-- 天气卡片 -->
@@ -54,6 +55,7 @@ import TimeCard from './cards/TimeCard.vue';
 import WeatherCard from './cards/WeatherCard.vue';
 import TodoCard from './cards/TodoCard.vue';
 import NoteCard from './cards/NoteCard.vue';
+import Lunar from 'lunar-javascript'; // 导入农历库
 
 export default {
   name: 'HelloWorld',
@@ -72,6 +74,7 @@ export default {
       currentTime: '',
       currentDate: '',
       currentDay: '',
+      lunarDate: '', // 添加农历日期
       weatherData: {
         location: '北京',
         temperature: 22,
@@ -156,10 +159,11 @@ export default {
     updateTime() {
       const now = new Date();
       
-      // 格式化时间 (HH:MM)
+      // 格式化时间 (HH:MM:SS)
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
-      this.currentTime = `${hours}:${minutes}`;
+      const seconds = String(now.getSeconds()).padStart(2, '0'); // 添加秒数
+      this.currentTime = `${hours}:${minutes}:${seconds}`;
       
       // 格式化日期 (YYYY年MM月DD日)
       const year = now.getFullYear();
@@ -170,6 +174,16 @@ export default {
       // 获取星期
       const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
       this.currentDay = days[now.getDay()];
+
+      // 计算农历日期 - 改进格式为"乙巳年二月廿五"
+      try {
+        const solar = Lunar.Solar.fromDate(now);
+        const lunar = solar.getLunar();
+        this.lunarDate = `${lunar.getYearInGanZhi()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`;
+      } catch (error) {
+        console.error('计算农历日期出错:', error);
+        this.lunarDate = '农历日期获取失败';
+      }
     },
     
     updateTodos(newTodos) {
