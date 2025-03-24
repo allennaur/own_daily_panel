@@ -113,12 +113,43 @@ export default {
 </script>
 
 <style scoped>
+/* 提高选择器权重并设置文字颜色 */
 :deep(.card) {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 159, 10, 0.1),
-    rgba(255, 179, 64, 0.15)
+  background: linear-gradient(135deg,
+    rgba(46, 176, 134, 1),
+    rgba(26, 115, 96, 0.95)
   ) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 确保装饰层不会遮挡内容 */
+:deep(.card)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 7.5V22.5" stroke="white" stroke-opacity="0.08" stroke-width="2" stroke-linecap="round"/><path d="M7.5 15H22.5" stroke="white" stroke-opacity="0.08" stroke-width="2" stroke-linecap="round"/></svg>');
+  background-size: 20px;
+  opacity: 0.3;
+  z-index: 0 !important;
+}
+
+/* 强制控制标题文字颜色 */
+:deep(.card-header) h3 {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  z-index: 5;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 确保卡片内容处于顶层 */
+:deep(.card-content) {
+  position: relative;
+  z-index: 5 !important;
 }
 
 .add-btn {
@@ -126,8 +157,8 @@ export default {
   height: 24px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--visionos-text);
+  background: rgba(255, 255, 255, 0.3); /* 增加背景对比度 */
+  color: white !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,12 +168,14 @@ export default {
 }
 
 .add-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.4); /* 增加悬停对比度 */
   transform: scale(1.05);
 }
 
 .todo-content {
   padding: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .todo-list {
@@ -154,56 +187,67 @@ export default {
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-  transition: background-color 0.2s ease;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
 }
 
 .todo-item:hover {
-  background-color: rgba(0, 0, 0, 0.01);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .todo-item.completed {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .todo-item.completed label {
   text-decoration: line-through;
-  opacity: 0.5;
+  opacity: 0.6;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .todo-item input[type="checkbox"] {
-  margin-right: 8px;
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid rgba(0, 0, 0, 0.2);
+  margin-right: 12px;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.6); /* 增加边框可见度 */
   border-radius: 50%;
   position: relative;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s;
 }
 
 .todo-item input[type="checkbox"]:checked {
-  background-color: var(--visionos-accent);
+  background-color: rgba(255, 255, 255, 0.95); /* 增加对比度 */
   border-color: transparent;
 }
 
 .todo-item input[type="checkbox"]:checked::after {
   content: "✓";
-  color: white;
+  color: rgba(46, 176, 134, 1); /* 增加勾选标记可见度 */
   font-size: 12px;
+  font-weight: 700; /* 增加勾选标记粗细 */
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
+.todo-item input[type="checkbox"]:not(:checked):hover {
+  border-color: rgba(255, 255, 255, 0.8); /* 增加悬停对比度 */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
 .todo-item label {
   flex: 1;
-  font-size: 13px;
-  color: var(--visionos-text);
+  font-size: 14px;
+  color: #ffffff !important; /* 使用白色文本 */
+  font-weight: 400;
   cursor: pointer;
+  transition: opacity 0.2s;
   letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .delete-btn {
@@ -213,7 +257,7 @@ export default {
   font-size: 16px;
   background: none;
   border: none;
-  color: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.7); /* 增加按钮可见度 */
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -223,32 +267,53 @@ export default {
 }
 
 .delete-btn:hover {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.95); /* 增加悬停可见度 */
   transform: scale(1.1);
 }
 
+/* 确保提示文本可读 */
 .empty-state {
   text-align: center;
-  padding: 20px;
-  color: var(--visionos-text-secondary);
-  font-size: 13px;
-  opacity: 0.6;
+  padding: 30px 20px;
+  color: #ffffff !important;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.15); /* 稍微亮一点的背景 */
+  border-radius: 12px;
+  margin: 10px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .add-todo-form {
-  padding: 12px;
-  border-top: 1px solid rgba(0, 0, 0, 0.03);
+  padding: 12px 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.05);
 }
 
+/* 确保表单元素可读 */
 .add-todo-form input {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 10px;
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff !important;
+  transition: all 0.2s;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.add-todo-form input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.add-todo-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .form-buttons {
@@ -263,23 +328,25 @@ export default {
   font-size: 14px;
   border: none;
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--visionos-text);
   transition: all 0.2s;
+  font-weight: 500; /* 适度加粗按钮文字 */
+  color: #ffffff !important;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .form-buttons button.save-btn {
-  background: var(--visionos-accent);
-  color: white;
+  background: rgba(255, 255, 255, 0.25);
+  color: white !important;
+  font-weight: 600; /* 加粗保存按钮 */
 }
 
 .form-buttons button:hover {
   transform: translateY(-1px);
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .form-buttons button.save-btn:hover {
-  background: rgba(10, 132, 255, 0.9);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 /* 尺寸特定样式 */
@@ -292,22 +359,36 @@ export default {
   text-align: center;
   padding: 8px;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
+  color: #ffffff !important;
   background: rgba(255, 255, 255, 0.2);
-  margin-top: 5px;
+  margin: 10px;
   border-radius: 8px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* 特定尺寸下的样式调整 */
 .todo-content.small .todo-item {
-  padding: 6px 10px;
+  padding: 8px 10px;
 }
 
 .todo-content.small .todo-item label {
-  font-size: 12px;
+  font-size: 13px;
+}
+
+.todo-content.small .empty-state {
+  padding: 15px;
 }
 
 .todo-content.large .todo-item {
-  padding: 10px 15px;
+  padding: 12px 18px;
+}
+
+/* 添加新按钮特效 */
+.todo-content.large .add-btn {
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 </style>

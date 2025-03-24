@@ -33,9 +33,11 @@ html, body {
 }
 
 #app {
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* 使用苹果设备专用字体堆栈 */
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "ss02", "ss03"; /* 启用苹果字体的特殊字形变体 */
   width: 100%;
   height: 100vh;
   background-color: var(--visionos-bg-color);

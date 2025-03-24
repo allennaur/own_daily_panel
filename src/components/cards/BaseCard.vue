@@ -13,7 +13,7 @@
     </div>
     
     <!-- 卡片内容 -->
-    <div class="card-content" :class="size">
+    <div :class="['card-content', size, { 'no-header': !showHeader }]">
       <slot></slot>
     </div>
   </div>
@@ -55,7 +55,10 @@ export default {
     }
   },
   mounted() {
-    this.setupCardEffect();
+    // 延迟设置卡片效果，确保DOM已完全挂载
+    this.$nextTick(() => {
+      this.setupCardEffect();
+    });
   },
   methods: {
     setupCardEffect() {
@@ -126,15 +129,14 @@ export default {
 /* 基础卡片样式 */
 .card {
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.9); /* 提高不透明度 */
   backdrop-filter: blur(30px);
   border: 1px solid var(--visionos-border);
   box-shadow: 
-    0 4px 30px rgba(0, 0, 0, 0.03),
-    0 1px 3px rgba(0, 0, 0, 0.02);
+    0 4px 30px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.03);
   overflow: hidden;
   height: 100%;
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-style: preserve-3d;
   will-change: transform;
   position: relative;
@@ -175,31 +177,36 @@ export default {
   cursor: context-menu; /* 只在标题栏显示上下文菜单提示 */
 }
 
-/* 卡片标题栏 */
+/* 卡片标题栏 - 默认深色文本 */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10; /* 确保标题在最顶层 */
 }
 
 .card-header h3 {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   margin: 0;
-  color: var(--visionos-text);
+  color: #333333; /* 默认深灰色，但会被卡片覆盖 */
   letter-spacing: -0.01em;
 }
 
 /* 卡片内容区域 */
 .card-content {
   padding: 14px;
-  height: calc(100% - 45px); /* 考虑了标题栏高度 */
+  height: calc(100% - 45px);
+  position: relative;
+  z-index: 5;
+  color: #333333; /* 默认内容文本颜色 */
 }
 
-/* 无标题栏卡片的内容区域 */
-.card:not(:has(.card-header)) .card-content {
+/* 无标题栏卡片的内容区域 - 修复:has()选择器兼容性问题 */
+.card-content.no-header {
   height: 100%;
 }
 
