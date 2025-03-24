@@ -134,7 +134,6 @@ export default {
     0 1px 3px rgba(0, 0, 0, 0.02);
   overflow: hidden;
   height: 100%;
-  min-height: 100px;
   transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-style: preserve-3d;
   will-change: transform;
@@ -204,26 +203,6 @@ export default {
   height: 100%;
 }
 
-/* 卡片尺寸类 */
-.card.card-small {
-  grid-column: span 1;
-  grid-row: span 1;
-  aspect-ratio: 1/1;
-  min-height: unset;
-}
-
-.card.card-medium {
-  grid-column: span 2;
-  grid-row: span 1;
-  aspect-ratio: 2/1;
-}
-
-.card.card-large {
-  grid-column: span 2;
-  grid-row: span 2;
-  aspect-ratio: 1/1;
-}
-
 /* 不同尺寸内容样式 */
 .card-content.small {
   padding: 10px;
@@ -236,4 +215,6 @@ export default {
 .card-content.large {
   padding: 16px;
 }
+
+/* 移除固定尺寸类，让HelloWorld处理位置和大小 */
 </style>

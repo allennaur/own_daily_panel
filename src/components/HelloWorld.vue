@@ -19,7 +19,7 @@
         </button>
       </div>
       <div class="panel-content">
-        <div class="cards-container" ref="cardsContainer">
+        <div class="bento-container" ref="bentoContainer">
           <!-- 时间日期卡片 -->
           <TimeCard 
             :time="currentTime" 
@@ -157,6 +157,14 @@ export default {
     if (panelContent) {
       panelContent.addEventListener('scroll', this.handleScroll);
     }
+
+    // 监听窗口大小变化，重新布局卡片
+    window.addEventListener('resize', this.optimizeBentoLayout);
+    
+    // 初始布局优化
+    this.$nextTick(() => {
+      this.optimizeBentoLayout();
+    });
   },
   beforeUnmount() {
     // 移除全屏监听
@@ -173,6 +181,9 @@ export default {
     if (panelContent) {
       panelContent.removeEventListener('scroll', this.handleScroll);
     }
+
+    // 移除窗口大小变化监听
+    window.removeEventListener('resize', this.optimizeBentoLayout);
   },
   methods: {
     toggleFullscreen() {
@@ -315,9 +326,9 @@ export default {
       this.cardSizes[cardId] = size;
       this.saveCardSizes();
       
-      // 允许布局重新计算
+      // 当卡片尺寸变化时重新优化布局
       this.$nextTick(() => {
-        this.updateCardsLayout();
+        this.optimizeBentoLayout();
       });
     },
     
@@ -353,7 +364,108 @@ export default {
       } else {
         target.classList.remove('scrolled');
       }
-    }
+    },
+
+    // 完全重写Bento布局算法
+    optimizeBentoLayout() {
+      const container = this.$refs.bentoContainer;
+      if (!container) return;
+      
+      // 获取所有卡片元素
+      const cards = Array.from(container.children);
+      if (!cards.length) return;
+      
+      // 获取容器宽度并计算布局参数
+      const containerWidth = container.clientWidth;
+      
+      // 根据容器宽度决定列数和单元格大小
+      const gridGap = 16; // 卡片间距
+      const columns = containerWidth >= 1200 ? 8 : (containerWidth >= 768 ? 6 : 4);
+      const cellSize = Math.floor((containerWidth - (columns - 1) * gridGap) / columns);
+      
+      // 初始化布局网格 (移除未使用的grid变量)
+      const heights = Array(columns).fill(0);
+      
+      // 卡片尺寸映射
+      const sizeMap = {
+        small: { width: 1, height: 1 },
+        medium: { width: 2, height: 1 },
+        large: { width: 2, height: 2 }
+      };
+      
+      // 排序卡片：优先放置大卡片
+      const sortedCards = [...cards].sort((a, b) => {
+        const aSize = a.classList.contains('card-large') ? 3 : 
+                     (a.classList.contains('card-medium') ? 2 : 1);
+        const bSize = b.classList.contains('card-large') ? 3 : 
+                     (b.classList.contains('card-medium') ? 2 : 1);
+        return bSize - aSize;
+      });
+      
+      // 为每个卡片找到合适位置
+      sortedCards.forEach(card => {
+        // 获取卡片尺寸
+        let cardSize = 'small';
+        if (card.classList.contains('card-medium')) cardSize = 'medium';
+        if (card.classList.contains('card-large')) cardSize = 'large';
+        
+        const { width, height } = sizeMap[cardSize];
+        
+        // 找到最佳位置（尽量居中）
+        const position = this.findBestPosition(heights, width, columns);
+        
+        // 更新网格高度
+        for (let i = 0; i < width; i++) {
+          heights[position + i] += height;
+        }
+        
+        // 应用卡片样式
+        const cardLeft = position * (cellSize + gridGap);
+        const cardTop = Math.min(...heights.slice(position, position + width)) - height;
+        const cardWidth = width * cellSize + (width - 1) * gridGap;
+        const cardHeight = height * cellSize + (height - 1) * gridGap;
+        
+        card.style.position = 'absolute';
+        card.style.left = `${cardLeft}px`;
+        card.style.top = `${cardTop * (cellSize + gridGap)}px`;
+        card.style.width = `${cardWidth}px`;
+        card.style.height = `${cardHeight}px`;
+      });
+      
+      // 设置容器高度
+      const maxHeight = Math.max(...heights) * (cellSize + gridGap);
+      container.style.height = `${maxHeight}px`;
+    },
+    
+    // 找最佳位置(居中优先策略)
+    findBestPosition(heights, width, columns) {
+      if (width > columns) return 0;
+      
+      // 计算可能的位置
+      const positions = [];
+      for (let i = 0; i <= columns - width; i++) {
+        positions.push({
+          position: i,
+          height: Math.max(...heights.slice(i, i + width))
+        });
+      }
+      
+      // 按高度排序
+      positions.sort((a, b) => a.height - b.height);
+      
+      // 如果高度相同，优先选择居中的位置
+      const minHeight = positions[0].height;
+      const sameHeightPositions = positions.filter(pos => pos.height === minHeight);
+      
+      if (sameHeightPositions.length > 1) {
+        const center = columns / 2 - width / 2;
+        return sameHeightPositions.sort((a, b) => 
+          Math.abs(a.position - center) - Math.abs(b.position - center)
+        )[0].position;
+      }
+      
+      return positions[0].position;
+    },
   }
 }
 </script>
@@ -502,18 +614,20 @@ export default {
   opacity: 1;
 }
 
-/* 卡片容器 - 优化网格布局支持标准尺寸，减小尺寸 */
-.cards-container {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr); /* 将列数增加一倍（4 → 8） */
-  grid-auto-rows: minmax(100px, auto); /* 将行高减小 (150px → 100px) */
-  gap: 12px; /* 减小间距（16px → 12px） */
+/* 卡片容器 - 采用真正的Bento UI布局 */
+.bento-container {
+  position: relative;
   width: 100%;
+  max-width: 1200px; /* 限制最大宽度，确保在宽屏上居中 */
+  min-height: 400px;
+  margin: 0 auto;
+  padding: 8px;
+  transition: height 0.3s ease;
 }
 
-/* 通用卡片样式 - VisionOS 风格 */
+/* 基础卡片样式 - 适配Bento UI */
 .card {
-  border-radius: 18px; /* 减小圆角 (24px → 18px) */
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.7) !important;
   backdrop-filter: blur(30px);
   border: 1px solid var(--visionos-border);
@@ -521,77 +635,64 @@ export default {
     0 4px 30px rgba(0, 0, 0, 0.03),
     0 1px 3px rgba(0, 0, 0, 0.02);
   overflow: hidden;
-  height: 100%;
-  min-height: 100px;   /* 减小最小高度 (200px → 100px) */
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              transform 0.3s ease-out,
+              left 0.4s ease-out,
+              top 0.4s ease-out,
+              width 0.4s ease-out,
+              height 0.4s ease-out;
   transform-style: preserve-3d;
-  will-change: transform;
-  position: relative;
+  will-change: transform, left, top, width, height;
+  position: absolute;
+  margin: 0;
+  z-index: 1;
 }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.1), 
-    rgba(255, 255, 255, 0.8), 
-    rgba(255, 255, 255, 0.1));
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.card:hover {
+  z-index: 2;
+  box-shadow: 
+    0 8px 40px rgba(0, 0, 0, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .panel-content {
+    padding: 12px;
+  }
+  
+  .bento-container {
+    padding: 4px;
+  }
+  
+  .card {
+    margin: 4px;
+  }
+}
+
+/* 添加卡片间隔阴影效果 */
+.card {
+  box-shadow: 
+    0 4px 30px rgba(0, 0, 0, 0.03),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 0 0 1px rgba(0, 0, 0, 0.01);
+  z-index: 1;
 }
 
 .card:hover {
   box-shadow: 
     0 8px 40px rgba(0, 0, 0, 0.05),
-    0 2px 5px rgba(0, 0, 0, 0.03);
+     0 4px 10px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+  z-index: 2;
 }
 
-.card:hover::before {
-  opacity: 1;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 14px; /* 减小内边距 (18px 20px → 12px 14px) */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.card-header h3 {
-  font-size: 14px; /* 减小字体 (16px → 14px) */
-  font-weight: 500;
-  margin: 0;
-  color: var(--visionos-text);
-  letter-spacing: -0.01em;
-}
-
-.card-content {
-  padding: 14px; /* 减小内边距 (20px → 14px) */
-}
-
-/* 卡片尺寸类 - 调整为新的尺寸标准 */
-.card.card-small {
-  grid-column: span 1; /* 1个单位宽 */
-  grid-row: span 1;    /* 1个单位高 */
-  aspect-ratio: 1/1;   /* 保持正方形 */
-  min-height: unset;   /* 移除最小高度限制 */
-}
-
-.card.card-medium {
-  grid-column: span 2; /* 2个单位宽 */
-  grid-row: span 1;    /* 1个单位高 */
-  aspect-ratio: 2/1;   /* 保持2:1的宽高比 */
-}
-
-.card.card-large {
-  grid-column: span 2; /* 2个单位宽 */
-  grid-row: span 2;    /* 2个单位高 */
-  aspect-ratio: 1/1;   /* 保持正方形 */
+/* 添加过渡效果 */
+.bento-container {
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 /* 卡片尺寸菜单 */
