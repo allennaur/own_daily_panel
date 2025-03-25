@@ -11,8 +11,8 @@ export default {
     return {
       canvas: null,
       ctx: null,
-      curveLines: [], // 改为曲线
-      particles: [],
+      curveLines: [], // 曲线元素
+      particles: [], // 改为圆形粒子
       raf: null,
       lastTimestamp: 0,
       colors: [
@@ -45,8 +45,8 @@ export default {
       // 创建背景曲线
       this.createCurveLines(8);
       
-      // 创建粒子
-      this.createParticles(25);
+      // 创建圆形粒子（替换原来的方块）
+      this.createCircleParticles(20);
       
       // 开始动画
       this.lastTimestamp = performance.now();
@@ -57,9 +57,9 @@ export default {
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
       
-      // 重新创建曲线和粒子
+      // 重新创建曲线和圆形粒子
       this.createCurveLines(8);
-      this.createParticles(25);
+      this.createCircleParticles(20);
     },
     
     // 创建曲线（替代直线）
@@ -107,47 +107,54 @@ export default {
       }
     },
     
-    createParticles(count) {
+    // 新的创建圆形粒子函数（替换方块粒子）
+    createCircleParticles(count) {
       this.particles = [];
       const { width, height } = this.canvas;
       
       for (let i = 0; i < count; i++) {
-        const size = Math.random() * 120 + 40;
+        // 使用不同的尺寸创建更多样化的圆形
+        const size = Math.random() * 180 + 60; // 增加尺寸范围
         const x = Math.random() * width;
         const y = Math.random() * height;
         const colorIndex = Math.floor(Math.random() * this.colors.length);
         const color = this.colors[colorIndex];
-        const alpha = Math.random() * 0.15 + 0.03;
-        // 柔和的缓动运动参数
-        const amplitudeX = Math.random() * 100 + 50;
-        const amplitudeY = Math.random() * 100 + 50;
-        const periodX = Math.random() * 8 + 4;
-        const periodY = Math.random() * 8 + 4;
+        const alpha = Math.random() * 0.12 + 0.02; // 降低不透明度，更柔和
+        
+        // 添加高斯模糊效果
+        const blur = Math.random() * 50 + 30; // 30-80px 的模糊半径
+        
+        // 添加更柔和的动画参数
+        const amplitudeX = Math.random() * 80 + 30; // 减小移动幅度
+        const amplitudeY = Math.random() * 80 + 30;
+        const periodX = Math.random() * 10 + 8; // 增加周期，减慢移动
+        const periodY = Math.random() * 10 + 8;
         const phaseX = Math.random() * Math.PI * 2;
         const phaseY = Math.random() * Math.PI * 2;
         
-        // 形状变形参数
-        const morphSpeed = Math.random() * 0.002 + 0.001;
-        const initialRadius = {
-          topLeft: 40 + Math.random() * 20,
-          topRight: 40 + Math.random() * 20,
-          bottomRight: 40 + Math.random() * 20,
-          bottomLeft: 40 + Math.random() * 20
-        };
+        // 添加渐变效果参数
+        const useGradient = Math.random() > 0.5;
+        const gradientColors = [
+          this.colors[Math.floor(Math.random() * this.colors.length)],
+          this.colors[Math.floor(Math.random() * this.colors.length)]
+        ];
         
         this.particles.push({
           baseX: x,
           baseY: y,
           x, y, size,
-          color, alpha,
-          // 添加缓动运动参数
+          color, 
+          alpha,
+          blur,
           amplitudeX, amplitudeY,
           periodX, periodY,
           phaseX, phaseY,
-          morphSpeed,
-          morphTime: 0,
-          initialRadius,
-          currentRadius: { ...initialRadius }
+          useGradient,
+          gradientColors,
+          // 添加轻微形变效果
+          deform: Math.random() * 0.3 + 0.7, // 椭圆率 0.7-1.0
+          rotation: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.001
         });
       }
     },
@@ -161,8 +168,8 @@ export default {
       // 绘制和更新曲线
       this.drawAndUpdateCurves(deltaTime);
       
-      // 绘制和更新粒子
-      this.drawAndUpdateParticles(deltaTime);
+      // 绘制和更新圆形粒子（替换方块粒子）
+      this.drawAndUpdateCircles(deltaTime);
       
       // 可选：绘制粒子之间的连接线
       this.drawParticleConnections();
@@ -238,6 +245,109 @@ export default {
           });
         }
       });
+    },
+    
+    // 新的绘制和更新圆形粒子函数
+    drawAndUpdateCircles(deltaTime) {
+      const { width, height } = this.canvas;
+      
+      this.particles.forEach(particle => {
+        // 更新位置（柔和的缓动移动）
+        const time = performance.now() * 0.001; // 以秒为单位的时间
+        particle.x = particle.baseX + Math.sin(time / particle.periodX + particle.phaseX) * particle.amplitudeX;
+        particle.y = particle.baseY + Math.sin(time / particle.periodY + particle.phaseY) * particle.amplitudeY;
+        
+        // 更新旋转角度
+        particle.rotation += particle.rotationSpeed * deltaTime;
+        
+        // 保存当前上下文状态
+        this.ctx.save();
+        
+        // 创建一个临时画布来实现模糊效果（比使用filter效率更高）
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        // 设置临时画布尺寸为粒子尺寸加上模糊半径
+        const extraSize = particle.blur * 2;
+        tempCanvas.width = particle.size + extraSize;
+        tempCanvas.height = particle.size + extraSize;
+        
+        // 在临时画布上绘制圆形
+        tempCtx.save();
+        tempCtx.translate(tempCanvas.width/2, tempCanvas.height/2);
+        tempCtx.rotate(particle.rotation);
+        tempCtx.scale(1, particle.deform); // 应用椭圆变形
+        
+        // 填充颜色或渐变
+        if (particle.useGradient) {
+          const gradient = tempCtx.createRadialGradient(
+            0, 0, 0,
+            0, 0, particle.size/2
+          );
+          gradient.addColorStop(0, `${particle.gradientColors[0]}${Math.floor(particle.alpha * 255).toString(16).padStart(2, '0')}`);
+          gradient.addColorStop(1, `${particle.gradientColors[1]}00`); // 边缘完全透明
+          tempCtx.fillStyle = gradient;
+        } else {
+          tempCtx.fillStyle = `${particle.color}${Math.floor(particle.alpha * 255).toString(16).padStart(2, '0')}`;
+        }
+        
+        // 绘制圆形
+        tempCtx.beginPath();
+        tempCtx.arc(0, 0, particle.size/2, 0, Math.PI * 2);
+        tempCtx.fill();
+        tempCtx.restore();
+        
+        // 应用高斯模糊 (简易实现)
+        this.applySimpleGaussianBlur(tempCtx, tempCanvas.width, tempCanvas.height, particle.blur/3);
+        
+        // 绘制到主画布
+        this.ctx.drawImage(
+          tempCanvas, 
+          particle.x - tempCanvas.width/2, 
+          particle.y - tempCanvas.height/2
+        );
+        
+        // 恢复上下文状态
+        this.ctx.restore();
+        
+        // 边界检查与位置调整
+        if (particle.x < -particle.size || 
+            particle.x > width + particle.size || 
+            particle.y < -particle.size || 
+            particle.y > height + particle.size) {
+          // 当粒子移出屏幕太远时，将其移到画布另一侧
+          if (Math.abs(particle.x - particle.baseX) > width/2 || 
+              Math.abs(particle.y - particle.baseY) > height/2) {
+            particle.baseX = Math.random() * width;
+            particle.baseY = Math.random() * height;
+            particle.phaseX = Math.random() * Math.PI * 2;
+            particle.phaseY = Math.random() * Math.PI * 2;
+          }
+        }
+      });
+    },
+    
+    // 简易高斯模糊实现
+    applySimpleGaussianBlur(ctx, width, height, radius) {
+      if (radius < 1) return;
+      
+      // 使用多次盒式模糊近似高斯模糊
+      const iterations = 3; // 迭代次数越多，越接近高斯
+      
+      for (let i = 0; i < iterations; i++) {
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        
+        // 水平方向模糊
+        tempCtx.drawImage(ctx.canvas, 0, 0);
+        ctx.save();
+        ctx.clearRect(0, 0, width, height);
+        ctx.filter = `blur(${radius/iterations}px)`;
+        ctx.drawImage(tempCanvas, 0, 0);
+        ctx.restore();
+      }
     },
     
     drawAndUpdateParticles(deltaTime) {
@@ -471,5 +581,6 @@ export default {
   display: block;
   width: 100%;
   height: 100%;
+  opacity: 0.8; /* 稍微提高透明度，使背景更加柔和 */
 }
 </style>
