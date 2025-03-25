@@ -332,13 +332,13 @@ export default {
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500; /* 适度加粗按钮文字 */
-  color: white !important;
+  color: white !重要;
   background: rgba(0, 0, 0, 0.1);
 }
 
 .form-buttons button.save-btn {
   background: rgba(255, 255, 255, 0.25);
-  color: white !important;
+  color: white !重要;
   font-weight: 600; /* 加粗保存按钮 */
 }
 
@@ -499,4 +499,170 @@ export default {
   background: rgba(46, 176, 134, 0.2);
   color: #2a7561;
 }
+
+/* 待办卡片 - VisionOS 风格 */
+:deep(.card) {
+  background: rgba(46, 176, 134, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 
+    0 10px 30px rgba(46, 176, 134, 0.12),
+    0 5px 15px rgba(46, 176, 134, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+}
+
+/* 格子背景图案 */
+:deep(.card)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 7.5V22.5" stroke="white" stroke-opacity="0.08" stroke-width="2" stroke-linecap="round"/><path d="M7.5 15H22.5" stroke="white" stroke-opacity="0.08" stroke-width="2" stroke-linecap="round"/></svg>');
+  background-size: 20px;
+  opacity: 0.25;
+  z-index: 0;
+}
+
+/* 白色文本 */
+:deep(.card-header) h3 {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  z-index: 5;
+}
+
+/* 添加按钮 - VisionOS 样式圆形按钮 */
+.add-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  color: white !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.add-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+/* 列表项 - VisionOS 风格 */
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-bottom: 6px;
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.todo-item:hover {
+  background: rgba(255, 255, 255, 0.17);
+}
+
+.todo-item.completed {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 复选框 - VisionOS 风格 */
+.todo-item input[type="checkbox"] {
+  margin-right: 12px;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.todo-item input[type="checkbox"]:checked {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: transparent;
+}
+
+/* 任务文本 */
+.todo-item label {
+  color: white !important;
+  font-weight: 500;
+}
+
+/* 空状态 - VisionOS 风格半透明面板 */
+.empty-state {
+  text-align: center;
+  padding: 30px 20px;
+  color: white !important;
+  font-size: 14px;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  margin: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 添加任务表单 - VisionOS 风格 */
+.add-todo-form {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  margin-top: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.add-todo-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white !important;
+  margin-bottom: 12px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* 按钮 - VisionOS 风格 */
+.form-buttons button {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white !important;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.form-buttons button.save-btn {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 其余样式保持不变 */
 </style>

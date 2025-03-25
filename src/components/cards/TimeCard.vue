@@ -570,4 +570,109 @@ export default {
   opacity: 0.7;
   z-index: 1;
 }
+
+/* 时间卡片 - VisionOS 风格 */
+:deep(.card) {
+  background: rgba(111, 66, 193, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 
+    0 10px 30px rgba(111, 66, 193, 0.12),
+    0 5px 15px rgba(111, 66, 193, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+}
+
+/* 发光背景效果 - VisionOS 内部光晕 */
+:deep(.card)::after {
+  content: '';
+  position: absolute;
+  width: 250%;
+  height: 250%;
+  top: -75%;
+  left: -75%;
+  background: radial-gradient(
+    circle, 
+    rgba(111, 66, 193, 0.15) 0%, 
+    rgba(111, 66, 193, 0) 60%
+  );
+  animation: timeGlow 15s infinite alternate;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
+/* 确保内容在顶层 */
+:deep(.card-content) {
+  position: relative;
+  z-index: 5 !important;
+}
+
+/* 时间文本 - VisionOS 风格深透明渐变与文字阴影 */
+.time {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10;
+}
+
+/* 大尺寸时间显示 */
+.large-time {
+  font-size: 60px !important;
+  margin-bottom: 10px;
+  font-weight: 700;
+  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  letter-spacing: -2px;
+  position: relative;
+  z-index: 10;
+}
+
+/* 日期显示 - 更轻柔的白色 */
+.date, .day, .small-date {
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+/* 时间段显示 - VisionOS风格半透明容器 */
+.time-section {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 12px 16px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 农历日期 - 特殊视觉效果 */
+.lunar-date {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+  background: linear-gradient(90deg, #ffe259, #ffa751);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  display: inline-block;
+  padding: 4px 10px;
+  position: relative;
+  z-index: 5;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 其余样式保持不变 */
 </style>

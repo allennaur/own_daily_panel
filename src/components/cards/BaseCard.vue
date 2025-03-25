@@ -126,32 +126,37 @@ export default {
 </script>
 
 <style scoped>
-/* 基础卡片样式 - 透明背景，美观边框 */
+/* 基础卡片样式 - VisionOS 风格 */
 .card {
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.6); /* 轻微的白色背景，提供对比度 */
-  backdrop-filter: blur(15px); /* 毛玻璃效果 */
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
   box-shadow: 
-    0 4px 24px rgba(0, 0, 0, 0.03),
-    0 1px 6px rgba(0, 0, 0, 0.02);
+    0 10px 25px rgba(0, 0, 0, 0.03),
+    0 5px 10px rgba(0, 0, 0, 0.02),
+    0 1px 3px rgba(0, 0, 0, 0.01),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
   overflow: hidden;
   height: 100%;
   transform-style: preserve-3d;
   will-change: transform;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* 卡片悬停效果 */
+/* 卡片悬停效果 - VisionOS 立体感 */
 .card:hover {
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.05),
-    0 2px 8px rgba(0, 0, 0, 0.03);
+    0 15px 35px rgba(0, 0, 0, 0.05),
+    0 7px 15px rgba(0, 0, 0, 0.03),
+    0 2px 5px rgba(0, 0, 0, 0.02),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3) !important;
   transform: translateY(-2px);
 }
 
-/* 卡片悬停光效 */
+/* 卡片顶部高光 - VisionOS 特征 */
 .card::before {
   content: '';
   position: absolute;
@@ -160,11 +165,12 @@ export default {
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.1), 
+    rgba(255, 255, 255, 0.3), 
     rgba(255, 255, 255, 0.8), 
-    rgba(255, 255, 255, 0.1));
+    rgba(255, 255, 255, 0.3));
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 1;
 }
 
 .card:hover::before {
@@ -173,36 +179,37 @@ export default {
 
 /* 卡片类型样式 */
 .card-readonly {
-  cursor: context-menu; /* 提示右键菜单可用 */
+  cursor: context-menu;
 }
 
 .card-editable .card-header {
-  cursor: context-menu; /* 只在标题栏显示上下文菜单提示 */
+  cursor: context-menu;
 }
 
-/* 卡片标题栏 - 精致设计 */
+/* 卡片标题栏 - VisionOS 风格 */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.1);
   position: relative;
-  z-index: 10;
+  z-index: 5;
 }
 
 .card-header h3 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   margin: 0;
+  color: rgba(0, 0, 0, 0.8);
   letter-spacing: -0.01em;
-  color: rgba(0, 0, 0, 0.75);
 }
 
-/* 卡片内容区域 */
+/* 卡片内容区域 - VisionOS 风格内边距 */
 .card-content {
-  padding: 14px;
-  height: calc(100% - 45px);
+  padding: 16px;
+  height: calc(100% - 53px);
   position: relative;
   z-index: 5;
 }
@@ -214,14 +221,14 @@ export default {
 
 /* 不同尺寸内容样式 */
 .card-content.small {
-  padding: 10px;
+  padding: 14px;
 }
 
 .card-content.medium {
-  padding: 12px;
+  padding: 16px;
 }
 
 .card-content.large {
-  padding: 16px;
+  padding: 18px;
 }
 </style>

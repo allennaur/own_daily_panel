@@ -116,7 +116,131 @@ export default {
 </script>
 
 <style scoped>
-/* 天气卡片使用深蓝色主题 */
+/* 天气卡片 - VisionOS 风格 */
+:deep(.card) {
+  background: rgba(25, 118, 210, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 
+    0 10px 30px rgba(25, 118, 210, 0.12),
+    0 5px 15px rgba(25, 118, 210, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+}
+
+/* 天气图案背景 */
+:deep(.card)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none"><path d="M70 55C70 62.732 63.732 69 56 69C48.268 69 42 62.732 42 55C42 47.268 48.268 41 56 41C63.732 41 70 47.268 70 55Z" fill="white" fill-opacity="0.08"/><path d="M50 30C50 35.523 45.523 40 40 40C34.477 40 30 35.523 30 30C30 24.477 34.477 20 40 20C45.523 20 50 24.477 50 30Z" fill="white" fill-opacity="0.05"/></svg>');
+  background-size: 150px;
+  background-position: center;
+  opacity: 0.25;
+  z-index: 0;
+}
+
+/* 文本颜色 - 明亮白色 */
+:deep(.card-header) h3,
+.temperature,
+.weather-desc,
+.location,
+.detail-label,
+.detail-value,
+.forecast-day,
+.forecast-temp {
+  color: rgba(255, 255, 255, 0.95) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 温度显示 - VisionOS 字体风格 */
+.temperature {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  letter-spacing: -0.5px;
+}
+
+/* 天气描述 - 背景亚克力效果 */
+.weather-desc {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: inline-block;
+}
+
+/* 大尺寸布局 */
+.weather-content.large {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.current-weather {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.forecast-item {
+  flex: 1;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 12px;
+  margin: 0 4px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.forecast-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* 降水和风速显示 */
+.weather-detail.large {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  margin: 0 4px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+}
+
+/* 其余样式保持不变 */
 :deep(.card) {
   background: linear-gradient(135deg,
     rgba(25, 118, 210, 1),

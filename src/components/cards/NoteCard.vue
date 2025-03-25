@@ -46,22 +46,25 @@ export default {
 <style scoped>
 /* 笔记卡片使用橙色主题 */
 :deep(.card) {
-  background: linear-gradient(135deg,
-    rgba(255, 159, 10, 0.95),
-    rgba(255, 122, 0, 0.9)
-  ) !important;
+  background: rgba(255, 159, 10, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 
+    0 10px 30px rgba(255, 159, 10, 0.12),
+    0 5px 15px rgba(255, 159, 10, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
 }
 
 /* 笔记卡片使用橙色系渐变文本 */
 :deep(.card-header) h3 {
-  background: linear-gradient(135deg, #ff9f0a, #ff7a00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 600 !important;
   letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  z-index: 5;
 }
 
 /* 笔记文本特殊处理 - 确保使用深色 */
@@ -77,15 +80,16 @@ textarea {
   border: none;
   resize: none;
   font-size: 14px;
-  color: #cc6600;
-  line-height: 22px;
+  color: rgba(0, 0, 0, 0.85) !important;
+  line-height: 23px;
   font-family: inherit;
   position: relative;
   z-index: 10 !important;
-  padding: 0;
+  padding: 16px 18px;
   letter-spacing: -0.01em;
   font-weight: 500;
-  background: transparent;
+  background: transparent !important;
+  margin-top: 5px;
 }
 
 /* 笔记卡片特殊处理 - 覆盖全局文本颜色 */
@@ -97,23 +101,45 @@ textarea {
 :deep(.card-content)::before {
   content: '';
   position: absolute;
-  top: 45px;
+  top: 10px;
   left: 10px;
   right: 10px;
   bottom: 10px;
-  background: rgba(255, 255, 255, 0.4); /* 增加背景不透明度以提高可读性 */
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   z-index: 1;
 }
 
 /* 笔记背景线条 */
 :deep(.card-content) {
   position: relative;
-  background: repeating-linear-gradient(transparent, transparent 21px, rgba(255, 159, 10, 0.1) 21px, rgba(255, 159, 10, 0.1) 22px);
+  background: none;
+  overflow: auto;
+}
+
+:deep(.card-content)::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background: repeating-linear-gradient(
+    transparent, 
+    transparent 22px, 
+    rgba(0, 0, 0, 0.04) 22px, 
+    rgba(0, 0, 0, 0.04) 23px
+  );
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 16px;
 }
 
 textarea::placeholder {
-  color: rgba(255, 159, 10, 0.5);
+  color: rgba(0, 0, 0, 0.4) !important;
   font-style: italic;
 }
 
@@ -138,24 +164,17 @@ textarea:focus {
 /* 尺寸特定样式 */
 textarea.small {
   font-size: 13px;
-  height: 60px;
-  padding-left: 5px;
-  color: #cc6600;
+  padding: 15px;
 }
 
 textarea.medium {
-  height: 70px;
-  padding-left: 10px;
-  font-size: 13.5px;
-  color: #cc6600;
+  height: calc(100% - 15px);
+  padding: 16px;
 }
 
 textarea.large {
-  height: 100%;
   font-size: 15px;
-  padding-left: 15px;
-  line-height: 24px;
-  color: #cc6600;
+  padding: 18px;
 }
 
 /* 添加装饰元素 */
@@ -165,8 +184,8 @@ textarea.large {
   bottom: 15px;
   right: 15px;
   font-size: 24px;
-  opacity: 0.5;
-  z-index: 2;
+  opacity: 0.3;
+  z-index: 11;
   transform: rotate(-15deg);
 }
 </style>
